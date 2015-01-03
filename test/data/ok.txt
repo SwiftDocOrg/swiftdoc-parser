@@ -1,0 +1,1308 @@
+infix operator + {
+    associativity left
+    precedence 140
+}
+
+prefix operator ++ {
+}
+
+infix operator == {
+    associativity none
+    precedence 130
+}
+
+func +(lhs: Int, rhs: Int) -> Int
+
+func +<C : _ExtensibleCollectionType, S : SequenceType where S.Generator.Element == S.Generator.Element>(lhs: C, rhs: S) -> C
+
+func +<T : Strideable>(lhs: T.Stride, rhs: T) -> T
+
+func +<T : Strideable>(lhs: T, rhs: T.Stride) -> T
+
+prefix func ++(inout x: Int) -> Int
+
+func ==(lhs: Int, rhs: Int) -> Bool
+
+func ==(lhs: Bool, rhs: Bool) -> Bool
+
+/// Returns true if these arrays contain the same elements.
+func ==<T : Equatable>(lhs: [T], rhs: [T]) -> Bool
+
+
+
+/// The protocol to which all types implicitly conform
+typealias Any = protocol<>
+
+
+/// The protocol to which all class types implicitly conform.
+///
+/// When used as a concrete type, all known `@objc` `class` methods and
+/// properties are available, as implicitly-unwrapped-optional methods
+/// and properties respectively, on each instance of `AnyClass`. For
+/// example:
+///
+/// .. parsed-literal:
+///
+///   class C {
+///     @objc class var cValue: Int { return 42 }
+///   }
+///
+///   // If x has an @objc cValue: Int, return its value.  
+///   // Otherwise, return nil.
+///   func getCValue(x: AnyClass) -> Int? {
+///     return **x.cValue**
+///   }
+///
+/// See also: `AnyObject`
+typealias AnyClass = AnyObject.Type
+
+
+/// The protocol to which all classes implicitly conform.
+///
+/// When used as a concrete type, all known `@objc` methods and
+/// properties are available, as implicitly-unwrapped-optional methods
+/// and properties respectively, on each instance of `AnyObject`.  For
+/// example:
+///
+/// .. parsed-literal:
+///
+///   class C {
+///     @objc func getCValue() -> Int { return 42 }
+///   }
+///
+///   // If x has a method @objc getValue()->Int, call it and
+///   // return the result.  Otherwise, return nil.
+///   func getCValue1(x: AnyObject) -> Int? {
+///     if let f: ()->Int = **x.getCValue** {
+///       return f()
+///     }
+///     return nil
+///   }
+///
+///   // A more idiomatic implementation using "optional chaining"
+///   func getCValue2(x: AnyObject) -> Int? {
+///     return **x.getCValue?()**
+///   }
+///
+///   // An implementation that assumes the required method is present
+///   func getCValue3(x: AnyObject) -> **Int** {
+///     return **x.getCValue()** // x.getCValue is implicitly unwrapped.
+///   }
+///
+/// See also: `AnyClass`
+@objc protocol AnyObject {
+}
+
+
+/// Conceptually_, `Array` is an efficient, tail-growable random-access
+/// collection of arbitrary elements.
+///
+/// Common Properties of Array Types
+/// ================================
+///
+/// The information in this section applies to all three of Swift's
+/// array types, `Array<T>`, `ContiguousArray<T>`, and `Slice<T>`.
+/// When you read the word "array" here in a normal typeface, it
+/// applies to all three of them.
+///
+/// Value Semantics
+/// ---------------
+///
+/// Each array variable, `let` binding, or stored property has an
+/// independent value that includes the values of all of its elements.
+/// Therefore, mutations to the array are not observable through its
+/// copies::
+///
+///   var a = [1, 2, 3]
+///   var b = a
+///   b[0] = 4
+///   println("a=\(a), b=\(b)")     // a=[1, 2, 3], b=[4, 2, 3]
+///
+/// (Of course, if the array stores `class` references, the objects
+/// are shared; only the values of the references are independent)
+///
+/// Arrays use Copy-on-Write so that their storage and elements are
+/// only copied lazily, upon mutation, when more than one array
+/// instance is using the same buffer.  Therefore, the first in any
+/// sequence of mutating operations may cost `O(N)` time and space,
+/// where `N` is the length of the array.
+///
+/// Growth and Capacity
+/// -------------------
+///
+/// When an array's contiguous storage fills up, new storage must be
+/// allocated and elements must be moved to the new storage.  `Array`,
+/// `ContiguousArray`, and `Slice` share an exponential growth
+/// strategy that makes `append` a constant time operation *when
+/// amortized over many invocations*.  In addition to a `count`
+/// property, these array types have a `capacity` that reflects their
+/// potential to store elements without reallocation, and when you
+/// know how many elements you'll store, you can call
+/// `reserveCapacity` to pre-emptively reallocate and prevent
+/// intermediate reallocations.
+///
+/// .. _Conceptually:
+///
+/// Objective-C Bridge
+/// ==================
+///
+/// The main distinction between `Array` and the other array types is
+/// that it interoperates seamlessly and efficiently with Objective-C.
+///
+/// `Array<T>` is considered bridged to Objective-C iff `T` is bridged
+/// to Objective-C.
+///
+/// When `T` is a `class` or `@objc` protocol type, `Array` may store
+/// its elements in an `NSArray`.  Since any arbitrary subclass of
+/// `NSArray` can become an `Array`, there are no guarantees about
+/// representation or efficiency in this case (see also
+/// `ContiguousArray`).  Since `NSArray` is immutable, it is just as
+/// though the storage was shared by some copy: the first in any
+/// sequence of mutating operations causes elements to be copied into
+/// unique, contiguous storage which may cost `O(N)` time and space,
+/// where `N` is the length of the array (or more, if the underlying
+/// `NSArray` is has unusual performance characteristics).
+///
+/// Bridging to Objective-C
+/// -----------------------
+///
+/// Any bridged `Array` can be implicitly converted to an `NSArray`.
+/// When `T` is a `class` or `@objc` protocol, bridging takes O(1)
+/// time and O(1) space.  Other `Array`\ s must be bridged
+/// element-by-element, allocating a new object for each element, at a
+/// cost of at least O(`count`) time and space.
+///
+/// Bridging from Objective-C
+/// -------------------------
+///
+/// An `NSArray` can be implicitly or explicitly converted to any
+/// bridged `Array<T>`.  This conversion calls `copyWithZone` on the
+/// `NSArray`, to ensure it won't be modified, and stores the result
+/// in the `Array`.  Type-checking, to ensure the `NSArray`\ 's
+/// elements match or can be bridged to `T`, is deferred until the
+/// first element access.
+struct Array<T> : MutableCollectionType, Sliceable {
+
+    /// The type of element stored by this `Array`
+    typealias Element = T
+
+    /// Always zero, which is the index of the first element when non-empty.
+    var startIndex: Int { get }
+
+    /// A "past-the-end" element index; the successor of the last valid
+    /// subscript argument.
+    var endIndex: Int { get }
+    subscript (index: Int) -> T
+
+    /// Return a *generator* over the elements.
+    ///
+    /// Complexity: O(1)
+    func generate() -> IndexingGenerator<[T]>
+
+    /// A type that can represent a sub-range of an `Array` 
+    typealias SubSlice = Slice<T>
+    subscript (subRange: Range<Int>) -> Slice<T>
+
+    /// Initialization from an existing buffer does not have "array.init"
+    /// semantics because the caller may retain an alias to buffer.
+    init(_ buffer: _ArrayBuffer<T>)
+}
+
+extension Array : ArrayLiteralConvertible {
+
+    /// Create an instance containing `elements`.
+    init(arrayLiteral elements: T...)
+}
+
+
+
+extension Array {
+
+    /// Construct an empty Array
+    init()
+
+    /// Construct from an arbitrary sequence with elements of type `T`
+    init<S : SequenceType where T == T>(_ s: S)
+
+    /// Construct a Array of `count` elements, each initialized to
+    /// `repeatedValue`.
+    init(count: Int, repeatedValue: T)
+
+    /// How many elements the Array stores
+    var count: Int { get }
+
+    /// How many elements the `Array` can store without reallocation
+    var capacity: Int { get }
+
+    /// `true` if and only if the `Array` is empty
+    var isEmpty: Bool { get }
+
+    /// The first element, or `nil` if the array is empty
+    var first: T? { get }
+
+    /// The last element, or `nil` if the array is empty
+    var last: T? { get }
+
+    /// Reserve enough space to store minimumCapacity elements.
+    ///
+    /// PostCondition: `capacity >= minimumCapacity` and the array has
+    /// mutable contiguous storage.
+    ///
+    /// Complexity: O(`count`)
+    mutating func reserveCapacity(minimumCapacity: Int)
+
+    /// Append newElement to the Array
+    ///
+    /// Complexity: amortized O(1) unless `self`'s storage is shared with another live array; O(`count`) if `self` does not wrap a bridged `NSArray`; otherwise the efficiency is unspecified.
+    mutating func append(newElement: T)
+
+    /// Append the elements of `newElements` to `self`.
+    ///
+    /// Complexity: O(*length of result*) 
+    /// 
+    mutating func extend<S : SequenceType where T == T>(newElements: S)
+
+    /// Remove an element from the end of the Array in O(1).
+    /// Requires: count > 0
+    mutating func removeLast() -> T
+
+    /// Insert `newElement` at index `i`.
+    ///
+    /// Requires: `i <= count`
+    ///
+    /// Complexity: O(\ `count`\ ).
+    mutating func insert(newElement: T, atIndex i: Int)
+
+    /// Remove and return the element at index `i`
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `count`\ ).
+    mutating func removeAtIndex(index: Int) -> T
+
+    /// Remove all elements.
+    ///
+    /// Postcondition: `capacity == 0` iff `keepCapacity` is `false`.
+    ///
+    /// Complexity: O(\ `countElements(self)`\ ).
+    mutating func removeAll(keepCapacity: Bool = default)
+
+    /// Interpose `self` between each consecutive pair of `elements`,
+    /// and concatenate the elements of the resulting sequence.  For
+    /// example, `[-1, -2].join([[1, 2, 3], [4, 5, 6], [7, 8, 9]])`
+    /// yields `[1, 2, 3, -1, -2, 4, 5, 6, -1, -2, 7, 8, 9]`
+    func join<S : SequenceType where [T] == [T]>(elements: S) -> [T]
+
+    /// Return the result of repeatedly calling `combine` with an
+    /// accumulated value initialized to `initial` and each element of
+    /// `self`, in turn, i.e. return
+    /// `combine(combine(...combine(combine(initial, self[0]),
+    /// self[1]),...self[count-2]), self[count-1])`.
+    func reduce<U>(initial: U, combine: (U, T) -> U) -> U
+
+    /// Sort `self` in-place according to `isOrderedBefore`.  Requires:
+    /// `isOrderedBefore` induces a `strict weak ordering
+    /// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+    /// over the elements.
+    mutating func sort(isOrderedBefore: (T, T) -> Bool)
+
+    /// Return a copy of `self` that has been sorted according to
+    /// `isOrderedBefore`.  Requires: `isOrderedBefore` induces a
+    /// `strict weak ordering
+    /// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+    /// over the elements.
+    func sorted(isOrderedBefore: (T, T) -> Bool) -> [T]
+
+    /// Return an `Array` containing the results of calling
+    /// `transform(x)` on each element `x` of `self`
+    func map<U>(transform: (T) -> U) -> [U]
+
+    /// A Array containing the elements of `self` in reverse order
+    func reverse() -> [T]
+
+    /// Return an `Array` containing the elements `x` of `self` for which
+    /// `includeElement(x)` is `true`
+    func filter(includeElement: (T) -> Bool) -> [T]
+}
+
+
+
+/// Conforming types can be initialized with array literals
+protocol ArrayLiteralConvertible {
+    typealias Element
+
+    /// Create an instance initialized with `elements`.
+    init(arrayLiteral elements: Element...)
+}
+
+
+/// An *index* that can step backwards via application of its
+/// `predecessor()` method.
+protocol BidirectionalIndexType : ForwardIndexType, _BidirectionalIndexType {
+}
+
+
+/// A value type whose instances are either `true` or `false`.
+struct Bool {
+
+    /// Default-initialize Boolean value to `false`.
+    init()
+}
+
+extension Bool : Equatable, Hashable {
+
+    /// The hash value.
+    ///
+    /// **Axiom:** `x == y` implies `x.hashValue == y.hashValue`
+    ///
+    /// **Note:** the hash value is not guaranteed to be stable across
+    /// different invocations of the same program.  Do not persist the
+    /// hash value across program runs.
+    var hashValue: Int { get }
+}
+
+extension Bool : Reflectable {
+
+    /// Returns a mirror that reflects `self`.
+    func getMirror() -> MirrorType
+}
+
+
+/// The C '_Bool' and C++ 'bool' type.
+typealias CBool = Bool
+
+/// The C 'long' type.
+typealias CLong = Int
+
+
+/// A multi-pass *sequence* with addressable positions.
+///
+/// Positions are represented by an associated `Index` type.  Whereas
+/// an arbitrary *sequence* may be consumed as it is traversed, a
+/// *collection* is multi-pass: any element may be revisited merely by
+/// saving its index.
+///
+/// The sequence view of the elements is identical to the collection
+/// view.  In other words, the following code binds the same series of
+/// values to `x` as does `for x in self {}`::
+///
+///   for i in startIndex..<endIndex {
+///     let x = self[i]
+///   }
+protocol CollectionType : _CollectionType, SequenceType {
+    subscript (position: Self.Index) -> Self.Generator.Element { get }
+}
+
+
+/// Instances of conforming types can be compared for value equality
+/// using operators `==` and `!=`.
+///
+/// When adopting `Equatable`, only the `==` operator is required to be
+/// implemented.  The standard library provides an implementation for `!=`.
+protocol Equatable {
+
+    /// Return true if `lhs` is equal to `rhs`.
+    ///
+    /// **Equality implies substitutability**.  When `x == y`, `x` and
+    /// `y` are interchangeable in any code that only depends on their
+    /// values.
+    ///
+    /// Class instance identity as distinguished by triple-equals `===`
+    /// is notably not part of an instance's value.  Exposing other
+    /// non-value aspects of `Equatable` types is discouraged, and any
+    /// that *are* exposed should be explicitly pointed out in
+    /// documentation.
+    /// 
+    /// **Equality is an equivalence relation**
+    ///
+    /// - `x == x` is `true`
+    /// - `x == y` implies `y == x`
+    /// - `x == y` and `y == z` implies `x == z`
+    ///
+    /// **Inequality is the inverse of equality**, i.e. `!(x == y)` iff
+    /// `x != y`
+    func ==(lhs: Self, rhs: Self) -> Bool
+}
+
+/// A collection type that can be efficiently appended-to.
+protocol ExtensibleCollectionType : _ExtensibleCollectionType {
+}
+
+
+/// Represents a discrete value in a series, where a value's
+/// successor, if any, is reachable by applying the value's
+/// `successor()` method.
+protocol ForwardIndexType : _ForwardIndexType {
+}
+
+
+/// Encapsulates iteration state and interface for iteration over a
+/// *sequence*.
+///
+/// **Note:** While it is safe to copy a *generator*, advancing one
+/// copy may invalidate the others.
+///
+/// Any code that uses multiple generators (or `for`\ ...\ `in` loops)
+/// over a single *sequence* should have static knowledge that the
+/// specific *sequence* is multi-pass, either because its concrete
+/// type is known or because it is constrained to `CollectionType`.
+/// Also, the generators must be obtained by distinct calls to the
+/// *sequence's* `generate()` method, rather than by copying.
+protocol GeneratorType {
+
+    /// The type of element generated by `self`.
+    typealias Element
+
+    /// Advance to the next element and return it, or `nil` if no next
+    /// element exists.
+    ///
+    /// Requires: `next()` has not been applied to a copy of `self`
+    /// since the copy was made, and no preceding call to `self.next()`
+    /// has returned `nil`.  Specific implementations of this protocol
+    /// are encouraged to respond to violations of this requirement by
+    /// calling `preconditionFailure("...")`.
+    mutating func next() -> Element?
+}
+
+
+/// Instances of conforming types provide an integer `hashValue` and
+/// can be used as `Dictionary` keys.
+protocol Hashable : Equatable {
+
+    /// The hash value.
+    ///
+    /// **Axiom:** `x == y` implies `x.hashValue == y.hashValue`
+    ///
+    /// **Note:** the hash value is not guaranteed to be stable across
+    /// different invocations of the same program.  Do not persist the
+    /// hash value across program runs.
+    var hashValue: Int { get }
+}
+
+
+
+/// A 64-bit signed integer value
+/// type.
+struct Int : SignedIntegerType {
+    var value: Builtin.Word
+
+    /// A type that can represent the number of steps between pairs of
+    /// values.
+    typealias Distance = Int
+
+    /// Create an instance initialized to zero.
+    init()
+
+    /// Create an instance initialized to `value`.
+    init(_ value: Int)
+
+    /// Creates an integer from its big-endian representation, changing the
+    /// byte order if necessary.
+    init(bigEndian value: Int)
+
+    /// Creates an integer from its little-endian representation, changing the
+    /// byte order if necessary.
+    init(littleEndian value: Int)
+    init(_builtinIntegerLiteral value: Builtin.Int2048)
+
+    /// Create an instance initialized to `value`.
+    init(integerLiteral value: Int)
+
+    /// Returns the big-endian representation of the integer, changing the
+    /// byte order if necessary.
+    var bigEndian: Int { get }
+
+    /// Returns the little-endian representation of the integer, changing the
+    /// byte order if necessary.
+    var littleEndian: Int { get }
+
+    /// Returns the current integer with the byte order swapped.
+    var byteSwapped: Int { get }
+    static var max: Int { get }
+    static var min: Int { get }
+}
+
+extension Int : Hashable {
+
+    /// The hash value.
+    ///
+    /// **Axiom:** `x == y` implies `x.hashValue == y.hashValue`
+    ///
+    /// **Note:** the hash value is not guaranteed to be stable across
+    /// different invocations of the same program.  Do not persist the
+    /// hash value across program runs.
+    var hashValue: Int { get }
+}
+
+extension Int : RandomAccessIndexType {
+
+    /// Returns the next consecutive value after `self`.
+    ///
+    /// Requires: the next value is representable.
+    func successor() -> Int
+
+    /// Returns the previous consecutive value before `self`.
+    ///
+    /// Requires: the previous value is representable.
+    func predecessor() -> Int
+
+    /// Return the minimum number of applications of `successor` or
+    /// `predecessor` required to reach `other` from `self`.
+    ///
+    /// Complexity: O(1).
+    func distanceTo(other: Int) -> Distance
+
+    /// Return `self` offset by `n` steps.
+    ///
+    /// :returns: If `n > 0`, the result of applying `successor` to
+    /// `self` `n` times.  If `n < 0`, the result of applying
+    /// `predecessor` to `self` `-n` times. Otherwise, `self`.
+    ///
+    /// Complexity: O(1)
+    func advancedBy(amount: Distance) -> Int
+}
+
+extension Int {
+
+    /// Add `lhs` and `rhs`, returning a result and a
+    /// `Bool` that is true iff the operation caused an arithmetic
+    /// overflow.
+    static func addWithOverflow(lhs: Int, _ rhs: Int) -> (Int, overflow: Bool)
+
+    /// Subtract `lhs` and `rhs`, returning a result and a
+    /// `Bool` that is true iff the operation caused an arithmetic
+    /// overflow.
+    static func subtractWithOverflow(lhs: Int, _ rhs: Int) -> (Int, overflow: Bool)
+
+    /// Multiply `lhs` and `rhs`, returning a result and a
+    /// `Bool` that is true iff the operation caused an arithmetic
+    /// overflow.
+    static func multiplyWithOverflow(lhs: Int, _ rhs: Int) -> (Int, overflow: Bool)
+
+    /// Divide `lhs` and `rhs`, returning
+    /// a result and a `Bool`
+    /// that is true iff the operation caused an arithmetic overflow.
+    static func divideWithOverflow(lhs: Int, _ rhs: Int) -> (Int, overflow: Bool)
+
+    /// Divide `lhs` and `rhs`, returning
+    /// the remainder and a `Bool`
+    /// that is true iff the operation caused an arithmetic overflow.
+    static func remainderWithOverflow(lhs: Int, _ rhs: Int) -> (Int, overflow: Bool)
+
+    /// Represent this number using Swift's widest native signed
+    /// integer type.
+    func toIntMax() -> IntMax
+}
+
+extension Int {
+    init(_ v: UInt8)
+    init(_ v: Int8)
+    init(_ v: UInt16)
+    init(_ v: Int16)
+    init(_ v: UInt32)
+    init(_ v: Int32)
+    init(_ v: UInt64)
+
+    /// Construct a `Int` having the same bitwise representation as
+    /// the least significant bits of the provided bit pattern.
+    ///
+    /// No range or overflow checking occurs.
+    init(truncatingBitPattern: UInt64)
+    init(_ v: Int64)
+
+    /// Construct a `Int` having the same bitwise representation as
+    /// the least significant bits of the provided bit pattern.
+    ///
+    /// No range or overflow checking occurs.
+    init(truncatingBitPattern: Int64)
+    init(_ v: UInt)
+
+    /// Construct a `Int` having the same memory representation as
+    /// the `UInt` `bitPattern`.  No range or overflow checking
+    /// occurs, and the resulting `Int` may not have the same numeric
+    /// value as `bitPattern`--it is only guaranteed to use the same
+    /// pattern of bits.
+    init(bitPattern: UInt)
+}
+
+extension Int : Reflectable {
+
+    /// Returns a mirror that reflects `self`.
+    func getMirror() -> MirrorType
+}
+
+
+/// The common requirements for types that support integer arithmetic.
+protocol IntegerArithmeticType : _IntegerArithmeticType {
+
+    /// Add `lhs` and `rhs`, returning a result and trapping in case of
+    /// arithmetic overflow (except in -Ounchecked builds).
+    func +(lhs: Self, rhs: Self) -> Self
+
+}
+
+
+/// Conforming types can be initialized with integer literals
+protocol IntegerLiteralConvertible {
+    typealias IntegerLiteralType
+
+    /// Create an instance initialized to `value`.
+    init(integerLiteral value: IntegerLiteralType)
+}
+
+
+/// The default type for an otherwise-unconstrained integer literal
+typealias IntegerLiteralType = Int
+
+
+/// A set of common requirements for Swift's integer types.
+protocol IntegerType : _IntegerType, RandomAccessIndexType {
+}
+
+
+/// An interval over a `Comparable` type.
+protocol IntervalType {
+
+    /// The type of the `Interval`\ 's endpoints
+    typealias Bound : Comparable
+
+    /// Returns `true` iff the interval contains `value`
+    func contains(value: Bound) -> Bool
+
+    /// Return `rhs` clamped to `self`.  The bounds of the result, even
+    /// if it is empty, are always within the bounds of `self`
+    func clamp(intervalToClamp: Self) -> Self
+
+    /// True iff `self` is empty
+    var isEmpty: Bool { get }
+
+    /// The `Interval`\ 's lower bound. Invariant: `start` <= `end`
+    var start: Bound { get }
+
+    /// The `Interval`\ 's upper bound. Invariant: `start` <= `end`
+    var end: Bound { get }
+}
+
+
+/// How children of this value should be presented in the IDE.
+enum MirrorDisposition {
+    case Struct
+    case Class
+    case Enum
+    case Tuple
+    case Aggregate
+    case IndexContainer
+    case KeyContainer
+    case MembershipContainer
+    case Container
+    case Optional
+    case ObjCObject
+}
+
+
+/// The type returned by `reflect(x)`; supplies an API for runtime
+/// reflection on `x`
+protocol MirrorType {
+
+    /// The instance being reflected
+    var value: Any { get }
+
+    /// Identical to `value.dynamicType`
+    var valueType: Any.Type { get }
+
+    /// A unique identifier for `value` if it is a class instance; `nil`
+    /// otherwise.
+    var objectIdentifier: ObjectIdentifier? { get }
+
+    /// The count of `value`\ 's logical children 
+    var count: Int { get }
+    subscript (i: Int) -> (String, MirrorType) { get }
+
+    /// A string description of `value`.
+    var summary: String { get }
+
+    /// A rich representation of `value` for an IDE, or `nil` if none is supplied.
+    var quickLookObject: QuickLookObject? { get }
+
+    /// How `value` should be presented in an IDE.
+    var disposition: MirrorDisposition { get }
+}
+
+
+/// A *collection* that supports subscript assignment.
+///
+/// For any instance `a` of a type conforming to
+/// `MutableCollectionType`, ::
+///
+///   a[i] = x
+///   let y = a[i]
+///
+/// is equivalent to ::
+///
+///   a[i] = x
+///   let y = x
+///
+protocol MutableCollectionType : CollectionType {
+    subscript (position: Self.Index) -> Self.Generator.Element { get set }
+}
+
+
+/// A *collection* with mutable slices.
+///
+/// For example,
+///
+/// .. parsed-literal:
+///
+///      x[i..<j] = *someExpression*
+///      x[i..<j].\ *mutatingMethod*\ ()
+protocol MutableSliceable : Sliceable, MutableCollectionType {
+    subscript (_: Range<Self.Index>) -> Self.SubSlice { get set }
+}
+
+
+/// An instance that exposes API for interaction with processes
+let Process: _Process
+
+
+/// The sum of types that can be used as a quick look representation.
+///
+/// This type must be binary-compatible with the 'QuickLookObject' struct in
+/// stdlib/Runtime/Reflection.mm, and 'QuickLookObject?' must be binary
+/// compatible with 'OptionalQuickLookObject' from the same.
+///
+/// NB: This type is somewhat carefully laid out to *suppress* enum layout
+/// optimization so that it is easier to manufacture in the C++ runtime
+/// implementation.
+enum QuickLookObject {
+    case Text(String)
+    case Int(Int64)
+    case UInt(UInt64)
+    case Float(Double)
+    case Image(Any)
+    case Sound(Any)
+    case Color(Any)
+    case BezierPath(Any)
+    case AttributedString(Any)
+    case Rectangle(Double, Double, Double, Double)
+    case Point(Double, Double)
+    case Size(Double, Double)
+    case Logical(Bool)
+    case Range(UInt64, UInt64)
+    case View(Any)
+    case Sprite(Any)
+    case URL(String)
+}
+
+
+/// An *index* that can be offset by an arbitrary number of positions,
+/// and can measure the distance to any reachable value, in O(1).
+protocol RandomAccessIndexType : BidirectionalIndexType, _RandomAccessIndexType {
+}
+
+
+/// A *collection* that supports replacement of an arbitrary subRange
+/// of elements with the elements of another collection.
+protocol RangeReplaceableCollectionType : ExtensibleCollectionType {
+
+    /// Replace the given `subRange` of elements with `newElements`.
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `countElements(subRange)`\ ) if
+    /// `subRange.endIndex == self.endIndex` and `isEmpty(newElements)`\ ,
+    /// O(\ `countElements(self)`\ + \`countElements(newElements)`\ ) otherwise.
+    mutating func replaceRange<C : CollectionType where `Self`.Generator.Element == Self.Generator.Element>(subRange: Range<Self.Index>, with newElements: C)
+
+    /// Insert `newElement` at index `i`.
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `countElements(self)`\ ).
+    ///
+    /// Can be implemented as::
+    ///
+    ///   Swift.insert(&self, newElement, atIndex: i)
+    mutating func insert(newElement: Self.Generator.Element, atIndex i: Self.Index)
+
+    /// Insert `newElements` at index `i`
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `countElements(self) + countElements(newElements)`\ ).
+    ///
+    /// Can be implemented as::
+    ///
+    ///   Swift.splice(&self, newElements, atIndex: i)
+    mutating func splice<S : CollectionType where `Self`.Generator.Element == Self.Generator.Element>(newElements: S, atIndex i: Self.Index)
+
+    /// Remove the element at index `i`
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `countElements(self)`\ ).
+    ///
+    /// Can be implemented as::
+    ///
+    ///   Swift.removeAtIndex(&self, i)
+    mutating func removeAtIndex(i: Self.Index) -> Self.Generator.Element
+
+    /// Remove the indicated `subRange` of elements
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// Complexity: O(\ `countElements(self)`\ ).
+    ///
+    /// Can be implemented as::
+    ///
+    ///   Swift.removeRange(&self, subRange)
+    mutating func removeRange(subRange: Range<Self.Index>)
+
+    /// Remove all elements
+    ///
+    /// Invalidates all indices with respect to `self`.
+    ///
+    /// :param: `keepCapacity`, if `true`, is a non-binding request to
+    ///    avoid releasing storage, which can be a useful optimization
+    ///    when `self` is going to be grown again.
+    ///
+    /// Complexity: O(\ `countElements(self)`\ ).
+    ///
+    /// Can be implemented as::
+    ///
+    ///   Swift.removeAll(&self, keepCapacity: keepCapacity)
+    mutating func removeAll(#keepCapacity: Bool)
+}
+
+
+/// Customizes the result of `reflect(x)`, where `x` is a conforming
+/// type.
+protocol Reflectable {
+
+    /// Returns a mirror that reflects `self`.
+    func getMirror() -> MirrorType
+}
+
+/// A type that can be iterated with a `for`\ ...\ `in` loop.
+///
+/// `SequenceType` makes no requirement on conforming types regarding
+/// whether they will be destructively "consumed" by iteration.  To
+/// ensure non-destructive iteration, constrain your *sequence* to
+/// `CollectionType`.
+protocol SequenceType : _Sequence_Type {
+
+    /// A type that provides the *sequence*\ 's iteration interface and
+    /// encapsulates its iteration state.
+    typealias Generator : GeneratorType
+
+    /// Return a *generator* over the elements of this *sequence*.
+    ///
+    /// Complexity: O(1)
+    func generate() -> Generator
+}
+
+/// A set of common requirements for Swift's signed integer types.
+protocol SignedIntegerType : _SignedIntegerType, IntegerType {
+}
+
+/// A *collection* from which a sub-range of elements (a "slice")
+/// can be efficiently extracted.
+protocol Sliceable : _Sliceable {
+
+    /// The *collection* type that represents a sub-range of elements.
+    ///
+    /// Though it can't currently be enforced by the type system, the
+    /// `SubSlice` type in a concrete implementation of `Sliceable`
+    /// should also be `Sliceable`.
+    typealias SubSlice : _Sliceable
+    subscript (bounds: Range<Self.Index>) -> SubSlice { get }
+}
+
+
+/// Conforming types are notionally continuous, one-dimensional
+/// values that can be offset and measured.
+///
+/// See also: `stride(from: to: by:)` and `stride(from: through: by:)`
+protocol Strideable : _Strideable {
+}
+
+
+/// The empty tuple type.
+///
+/// This is the default return type of functions for which no explicit
+/// return type is specified.
+typealias Void = ()
+
+
+/// A signed integer type that occupies one machine word
+typealias Word = Int
+
+
+/// This protocol is an implementation detail of `BidirectionalIndexType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `BidirectionalIndexType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _BidirectionalIndexType : _ForwardIndexType {
+
+    /// Return the previous consecutive value in a discrete sequence.
+    ///
+    /// If `self` has a well-defined successor,
+    /// `self.successor().predecessor() == self`.  If `self` has a
+    /// well-defined predecessor, `self.predecessor().successor() ==
+    /// self`.
+    ///
+    /// Requires: `self` has a well-defined predecessor.
+    func predecessor() -> Self
+}
+
+
+/// This protocol is an implementation detail of `CollectionType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `CollectionType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _CollectionType : _SequenceType {
+
+    /// A type that represents a valid position in the collection.
+    ///
+    /// Valid indices consist of the position of every element and a
+    /// "past the end" position that's not valid for use as a subscript.
+    typealias Index : ForwardIndexType
+
+    /// The position of the first element in a non-empty collection.
+    ///
+    /// Identical to `endIndex` in an empty collection.
+    var startIndex: Index { get }
+
+    /// The collection's "past the end" position.
+    ///
+    /// `endIndex` is not a valid argument to `subscript`, and is always
+    /// reachable from `startIndex` by zero or more applications of
+    /// `successor()`.
+    var endIndex: Index { get }
+    typealias _Element
+    subscript (_i: Index) -> _Element { get }
+}
+
+
+
+/// This protocol is an implementation detail of `ExtensibleCollectionType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `ExtensibleCollectionType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _ExtensibleCollectionType : CollectionType {
+
+    /// Create an empty instance
+    init()
+
+    /// A non-binding request to ensure `n` elements of available storage.
+    ///
+    /// This works as an optimization to avoid multiple reallocations of
+    /// linear data structures like `Array`.  Conforming types may
+    /// reserve more than `n`, exactly `n`, less than `n` elements of
+    /// storage, or even ignore the request completely.
+    mutating func reserveCapacity(n: Self.Index.Distance)
+
+    /// Append `x` to `self`.
+    ///
+    /// Applying `successor()` to the index of the new element yields
+    /// `self.endIndex`.
+    ///
+    /// Complexity: amortized O(1).
+    mutating func append(x: Self.Generator.Element)
+
+    /// Append the elements of `newElements` to `self`.
+    ///
+    /// Complexity: O(*length of result*) 
+    /// 
+    /// A possible implementation::
+    ///
+    ///   reserveCapacity(countElements(self) + underestimateCount(newElements))
+    ///   for x in newElements {
+    ///     newElements.append(x)
+    ///   }
+    mutating func extend<S : SequenceType where `Self`.Generator.Element == Self.Generator.Element>(newElements: S)
+}
+
+
+/// This protocol is an implementation detail of `ForwardIndexType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `ForwardIndexType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _ForwardIndexType : _Incrementable {
+
+    /// A type that can represent the number of steps between pairs of
+    /// `Self` values where one value is reachable from the other.
+    ///
+    /// Reachability is defined by the ability to produce one value from
+    /// the other via zero or more applications of `successor`.
+    typealias Distance : _SignedIntegerType = Int
+    typealias _DisabledRangeIndex = _DisabledRangeIndex_
+}
+
+
+/// This protocol is an implementation detail of `ForwardIndexType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `ForwardIndexType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _Incrementable : Equatable {
+
+    /// Return the next consecutive value in a discrete sequence of
+    /// `Self` values
+    ///
+    /// Requires: `self` has a well-defined successor.
+    func successor() -> Self
+}
+
+
+/// This protocol is an implementation detail of `IntegerArithmeticType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `IntegerArithmeticType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _IntegerArithmeticType {
+
+    /// Add `lhs` and `rhs`, returning a result and a `Bool` that is
+    /// true iff the operation caused an arithmetic overflow.
+    class func addWithOverflow(lhs: Self, _ rhs: Self) -> (Self, overflow: Bool)
+
+    /// Subtract `lhs` and `rhs`, returning a result and a `Bool` that is
+    /// true iff the operation caused an arithmetic overflow.
+    class func subtractWithOverflow(lhs: Self, _ rhs: Self) -> (Self, overflow: Bool)
+
+    /// Multiply `lhs` and `rhs`, returning a result and a `Bool` that is
+    /// true iff the operation caused an arithmetic overflow.
+    class func multiplyWithOverflow(lhs: Self, _ rhs: Self) -> (Self, overflow: Bool)
+
+    /// Divide `lhs` and `rhs`, returning a result and a `Bool` that is
+    /// true iff the operation caused an arithmetic overflow.
+    class func divideWithOverflow(lhs: Self, _ rhs: Self) -> (Self, overflow: Bool)
+
+    /// Divide `lhs` and `rhs`, returning the remainder and a `Bool` that is
+    /// true iff the operation caused an arithmetic overflow.
+    class func remainderWithOverflow(lhs: Self, _ rhs: Self) -> (Self, overflow: Bool)
+}
+
+
+/// This protocol is an implementation detail of `IntegerType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `IntegerType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _IntegerType : IntegerLiteralConvertible, Hashable, IntegerArithmeticType, _Incrementable {
+}
+
+
+/// This protocol is an implementation detail of `RandomAccessIndexType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `RandomAccessIndexType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _RandomAccessIndexType : _BidirectionalIndexType, Strideable {
+
+    /// Return the minimum number of applications of `successor` or
+    /// `predecessor` required to reach `other` from `self`.
+    ///
+    /// Complexity: O(1).
+    ///
+    /// Axioms::
+    /// 
+    ///   x.distanceTo(x.successor())) == 1
+    ///   x.distanceTo(x.predecessor())) == -1
+    ///   x.advancedBy(x.distanceTo(y)) == y
+    func distanceTo(other: Self) -> Self.Distance
+
+    /// Return `self` offset by `n` steps.
+    ///
+    /// :returns: If `n > 0`, the result of applying `successor` to
+    /// `self` `n` times.  If `n < 0`, the result of applying
+    /// `predecessor` to `self` `-n` times. Otherwise, `self`.
+    ///
+    /// Complexity: O(1)
+    ///
+    /// Axioms::
+    ///
+    ///   x.advancedBy(0) == x
+    ///   x.advancedBy(1) == x.successor()
+    ///   x.advancedBy(-1) == x.predecessor()
+    ///   x.distanceTo(x.advancedBy(m)) == m
+    func advancedBy(n: Self.Distance) -> Self
+}
+
+
+/// This protocol is an implementation detail of `SequenceType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `SequenceType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _SequenceType {
+}
+
+
+/// This protocol is an implementation detail of `SequenceType`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `SequenceType` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _Sequence_Type : _SequenceType {
+
+    /// A type whose instances can produce the elements of this
+    /// sequence, in order.
+    typealias Generator : GeneratorType
+
+    /// Return a *generator* over the elements of this *sequence*.  The
+    /// *generator*\ 's next element is the first element of the
+    /// sequence.
+    ///
+    /// Complexity: O(1)
+    func generate() -> Generator
+}
+
+
+/// This protocol is an implementation detail of `SignedIntegerType`;
+/// do not use it directly.
+///
+/// Its requirements are inherited by `SignedIntegerType` and thus
+/// must be satisfied by types conforming to that protocol.
+protocol _SignedIntegerType : _IntegerType {
+
+    /// Represent this number using Swift's widest native signed integer
+    /// type.
+    func toIntMax() -> IntMax
+
+    /// Convert from Swift's widest signed integer type, trapping on
+    /// overflow.
+    init(_: IntMax)
+}
+
+
+/// This protocol is an implementation detail of `Sliceable`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `Sliceable` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _Sliceable : CollectionType {
+}
+
+
+/// This protocol is an implementation detail of `Strideable`; do
+/// not use it directly.
+///
+/// Its requirements are inherited by `Strideable` and thus must
+/// be satisfied by types conforming to that protocol.
+protocol _Strideable {
+
+    /// A type that can represent the distance between two values of `Self`
+    typealias Stride : SignedNumberType
+
+    /// Returns a stride `x` such that `self.advancedBy(x)` approximates
+    /// `other`.
+    ///
+    /// Complexity: O(1).
+    ///
+    /// See also: `RandomAccessIndexType`\ 's `distanceTo`, which provides a
+    /// stronger semantic guarantee.
+    func distanceTo(other: Self) -> Stride
+
+    /// Returns a `Self` `x` such that `self.distanceTo(x)` approximates
+    /// `n`.
+    ///
+    /// Complexity: O(1).
+    ///
+    /// See also: `RandomAccessIndexType`\ 's `advancedBy`, which
+    /// provides a stronger semantic guarantee.
+    func advancedBy(n: Stride) -> Self
+}
+
+
+/// Return the result of advancing `start` by `n` positions.  If `T`
+/// models `RandomAccessIndexType`, executes in O(1).  Otherwise,
+/// executes in O(`abs(n)`).  If `T` does not model
+/// `BidirectionalIndexType`, requires that `n` is non-negative.
+///
+/// `advance(i, n)` is a synonym for `i++n'
+func advance<T : ForwardIndexType>(start: T, n: T.Distance) -> T
+
+
+/// Return the result of advancing start by `n` positions, or until it
+/// equals `end`.  If `T` models `RandomAccessIndexType`, executes in
+/// O(1).  Otherwise, executes in O(`abs(n)`).  If `T` does not model
+/// `BidirectionalIndexType`, requires that `n` is non-negative.
+func advance<T : ForwardIndexType>(start: T, n: T.Distance, end: T) -> T
+
+
+/// Returns the minimum memory alignment of `T`.
+func alignof<T>(_: T.Type) -> Int
+
+
+/// Returns the minimum memory alignment of `T`.
+func alignofValue<T>(_: T) -> Int
+
+
+/// User code assertions.
+///
+/// User code assertions and fatal errors are only enabled in debug mode. In
+/// release or fast mode these checks are disabled. This means they may have no
+/// effect on program semantics, depending on the assert configuration.
+/// Traditional C-style assert with an optional message.
+///
+/// When assertions are enabled and `condition` is false, stop program
+/// execution in a debuggable state after printing a message.  When
+/// assertions are disabled in release and fast builds, `condition` is not even
+/// evaluated.
+///
+/// When assertions are turned off, the optimizer can assume that the
+/// `condition` is true.
+func assert(condition: @autoclosure () -> Bool, _ message: @autoclosure () -> String = default, file: StaticString = default, line: UWord = default)
+
+
+/// Dump an object's contents using its mirror to standard output.
+func dump<T>(x: T, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
+
+
+/// Dump an object's contents using its mirror to the specified output stream.
+func dump<T, TargetStream : OutputStreamType>(x: T, inout targetStream: TargetStream, name: String? = default, indent: Int = default, maxDepth: Int = default, maxItems: Int = default) -> T
+
+
+/// Return a lazy `SequenceType` containing pairs (*n*, *x*), where
+/// *n*\ s are consecutive `Int`\ s starting at zero, and *x*\ s are
+/// the elements of `base`::
+///
+///   > for (n, c) in enumerate("Swift") { println("\(n): '\(c)'" )}
+///   0: 'S'
+///   1: 'w'
+///   2: 'i'
+///   3: 'f'
+///   4: 't'
+func enumerate<Seq : SequenceType>(base: Seq) -> EnumerateSequence<Seq>
+
+
+/// Re-order the given `range` of `elements` and return a pivot index
+/// *p*.  Postcondition: for all *i* in `range.startIndex..<`\ *p*,
+/// and *j* in *p*\ `..<range.endIndex`, `less(elements[`\ *i*\ `],
+/// elements[`\ *j*\ `]) && !less(elements[`\ *j*\ `], elements[`\
+/// *p*\ `])`.  Only returns `range.endIndex` when `elements` is
+/// empty.
+/// Requires: `isOrderedBefore` is a `strict weak ordering
+/// <http://en.wikipedia.org/wiki/Strict_weak_order#Strict_weak_orderings>`__
+/// over `elements`.
+func partition<C : MutableCollectionType where C.Index : RandomAccessIndexType>(inout elements: C, range: Range<C.Index>, isOrderedBefore: (C.Generator.Element, C.Generator.Element) -> Bool) -> C.Index
+
+
+/// Translate `input`, in the given `InputEncoding`, into `output`, in
+/// the given `OutputEncoding`.
+///
+/// :param: `stopOnError` causes encoding to stop when an encoding
+///   error is detected in `input`, if `true`.  Otherwise, U+FFFD
+///   replacement characters are inserted for each detected error.
+func transcode<Input : GeneratorType, Output : SinkType, InputEncoding : UnicodeCodecType, OutputEncoding : UnicodeCodecType where InputEncoding.CodeUnit == InputEncoding.CodeUnit, OutputEncoding.CodeUnit == OutputEncoding.CodeUnit>(inputEncoding: InputEncoding.Type, outputEncoding: OutputEncoding.Type, input: Input, output: Output, #stopOnError: Bool) -> (Bool)
+
+
+/// Like `withUnsafeMutablePointer`, but passes pointers to `arg0`, `arg1`,
+/// and `arg2`.
+func withUnsafeMutablePointers<A0, A1, A2, Result>(inout arg0: A0, inout arg1: A1, inout arg2: A2, body: (UnsafeMutablePointer<A0>, UnsafeMutablePointer<A1>, UnsafeMutablePointer<A2>) -> Result) -> Result
+
+

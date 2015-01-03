@@ -1,0 +1,8 @@
+<div class="declaration">
+<code class="language-swift">{{ var.stat | withSpaceAfter }}{{ var.kind }} {{ var.name | escape }}: {{ var.type | escape }} { get {% if not var.readonly %}set {% endif %}}</code>
+{% if var.comment %}
+<div class="comment">
+    {{ var.comment | rst }}
+</div>
+{% endif %}
+</div>

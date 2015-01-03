@@ -1,0 +1,5 @@
+{% spaceless %}
+{% set type = param.type | escape %}
+{% if param.note is not empty %}{{ param.note }} {% endif %}{{ param.name }}: {{ type }}{% if param.default %} = {{ param.default }}{% endif %}
+
+{% endspaceless %}

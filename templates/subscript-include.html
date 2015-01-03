@@ -1,0 +1,8 @@
+<div class="declaration">
+<code class="language-swift">subscript{% include 'generic.html' %}({% for param in sub.params %}{% include 'param.html' %}{% if true != loop.last %}, {% endif %}{% endfor %}){% if sub.ret is not empty %} -> {{ sub.ret.line | escape }}{% endif %}</code>
+{% if sub.comment %}
+<div class="comment">
+    {{ sub.comment | rst }}
+</div>
+{% endif %}
+</div>

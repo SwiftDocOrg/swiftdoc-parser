@@ -1,0 +1,19 @@
+
+/// This protocol is an implementation detail of `Array` and `Slice`. It is *internal* to the Swift standard library and is included here only to link `Array` and `Slice` to other protocols.
+protocol _ArrayType : CollectionType {
+}
+
+/// This protocol is an implementation detail of `Array` and `Slice`. It is *internal* to the Swift standard library and is included here only to link `Array` and `Slice` to other protocols.
+protocol ArrayType : _ArrayType, RangeReplaceableCollectionType, MutableSliceable, ArrayLiteralConvertible {
+}
+
+extension ContiguousArray : ArrayType {
+}
+
+extension Slice : ArrayType {
+}
+
+extension Array : ArrayType {
+}
+
+

@@ -1,0 +1,10 @@
+{% for alias in aliases %}
+<div class="declaration">
+<code class="language-swift">typealias {{ alias.name | escape }}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
+{% if alias.comment %}
+<div class="comment">
+    {{ alias.comment | rst }}
+</div>
+{% endif %}
+</div>
+{% endfor %}

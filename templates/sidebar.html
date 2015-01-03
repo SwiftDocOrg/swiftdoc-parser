@@ -1,0 +1,73 @@
+<div class="panel-group" id="accordion">
+
+  <div class="panel">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTypes">
+          Types
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTypes" class="panel-collapse collapse">
+      <div class="panel-body list-group">
+        {% for item in items.type %}
+        <a href="{{ types[item.name] }}" class="list-group-item">{{ item.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseProtocols">
+          Protocols
+        </a>
+      </h4>
+    </div>
+    <div id="collapseProtocols" class="panel-collapse collapse">
+      <div class="panel-body list-group">
+        {% for item in items.protocol %}
+        <a href="/protocol/{{ item.name }}/" class="list-group-item">{{ item.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOperators">
+          Operators
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOperators" class="panel-collapse collapse">
+      <div class="panel-body list-group">
+        {% for item in items.operator %}
+        <a href="/operator/{{ item.name | opname }}/" class="list-group-item">{{ item.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseGlobals">
+          Globals
+        </a>
+      </h4>
+    </div>
+    <div id="collapseGlobals" class="panel-collapse collapse">
+      <div class="panel-body list-group">
+        <a href="/global/var/" class="list-group-item">Variables</a>
+        <a href="/global/alias/" class="list-group-item">Type Aliases</a>
+        <span class="subnav-header list-group-item">Functions</span>
+        {% for item in functions %}
+        <a href="/func/{{ item }}/" class="list-group-item">{{ item }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

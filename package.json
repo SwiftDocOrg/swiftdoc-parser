@@ -1,0 +1,29 @@
+{
+  "name": "swiftdoc-parser",
+  "version": "0.1.0",
+  "description": "A parser for Swift source files.",
+  "main": "lib/index.js",
+  "author": {
+    "name": "Nate Cook",
+    "email": "nate@natecook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/SwiftDocOrg/swiftdoc-parser.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "bluebird": "^2.3.11",
+    "mkdirp": "^0.5.0",
+    "mocha": "^1.21.4",
+    "natural-compare-lite": "^1.3.0",
+    "pcre": "0.0.6",
+    "twig": "^0.7.2",
+    "wrench": "^1.5.8"
+  }
+}

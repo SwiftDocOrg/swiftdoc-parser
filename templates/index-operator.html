@@ -1,0 +1,13 @@
+{% set groups = 4 %}
+{% set size = (operators|length + 1) // groups %}
+<div class="row">
+{% for i in 1..groups %}
+<div class="col-sm-3 col-xs-6">
+<ul class="main-list">
+{% for item in operators | slice((i - 1) * size, size) %}
+<li><a href="{{ root }}/operator/{{ item.name | opname }}/">{{ item.name | escape }}</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endfor %}
+</div>

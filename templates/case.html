@@ -1,0 +1,8 @@
+<div class="declaration">
+<code class="language-swift">case {{ case.name }}{{ case.associated }}</code>
+{% if case.comment %}
+<div class="comment">
+    {{ case.comment | rst }}
+</div>
+{% endif %}
+</div>

@@ -1,0 +1,13 @@
+<div class="declaration">
+<code class="language-swift">{{ func.attr | withSpaceAfter }}{{ func.note | withSpaceAfter }}{{ func.place | withSpaceAfter }}func {{ func.name | escape }}{% include 'generic.html' %}({%
+    if func.params is not empty %}{% 
+        for param in func.params %}{% 
+            include 'param.html' %}{% if true != loop.last %}, {% endif %}{% 
+        endfor %}{%
+    endif %}){% if func.ret is not empty %} -> {{ func.ret.line | escape }}{% endif %}</code>
+{% if func.comment %}
+<div class="comment">
+    {{ func.comment | rst }}
+</div>
+{% endif %}
+</div>

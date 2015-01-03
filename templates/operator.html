@@ -1,0 +1,12 @@
+<code class="language-swift">{{ operator.place }} operator {{ operator.name | escape }} {
+    associativity {{ operator.associativity }}
+    precedence {{ operator.precedence }}
+{% if operator.assignment %}    assignment
+{% endif %}
+}</code>
+
+<h3>Declarations</h3>
+
+{% for func in operator.functions %}
+{% include 'func-include.html' %}
+{% endfor %}

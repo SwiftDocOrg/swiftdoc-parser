@@ -1,0 +1,6 @@
+{% spaceless %}
+{% set line = func.generic.line | escape %}
+{% if line %}
+&lt;{{ line }}&gt;
+{% endif %}
+{% endspaceless %}

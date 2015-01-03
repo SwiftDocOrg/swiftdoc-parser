@@ -1,0 +1,102 @@
+<code class="language-swift">{{ type.kind }} {{ type.name }}{% include 'generic.html' with { func: type } only %} { ... }</code>
+
+{% if type.comment is not empty %}
+<div class="comment">
+    {{ type.comment | rst }}
+</div>
+{% endif %}
+
+{% if type.inherits is not empty or hasHierarchy %}
+<h3>Inheritance</h3>
+{% if type.inherits is not empty %}
+<code class="inherits">{% for inh in type.inherits %}{{ inh }}{% if true != loop.last %}, {% endif %}{% endfor %}</code>
+{% endif %}
+{% if hasHierarchy %}
+<span class="viz"><a href="hierarchy/">Protocol hierarchy</a></span>
+{% endif %}
+{% endif %}
+
+{% if type.aliases is not empty %}
+<h3>Associated types</h3>
+{% for alias in type.aliases %}
+<div class="declaration">
+<code class="language-swift">typealias {{ alias.name | escape }}{% if alias.proto %} : {{ alias.proto | escape }}{% endif %}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
+{% if alias.comment %}
+<div class="comment">
+    {{ alias.comment | rst }}
+</div>
+{% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if type.types is not empty %}
+<h3>Nested types</h3>
+<code class="nested">{% for nested in type.types %}{{ nested }}{% if true != loop.last %}, {% endif %}{% endfor %}</code>
+{% endif %}
+
+{% if type.cases is not empty %}
+<h3>Cases</h3>
+{% for case in type.cases %}
+{% include 'case.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.inits is not empty %}
+<h3>Initializers</h3>
+{% for init in type.inits %}
+<div class="declaration">
+<code class="language-swift">{{ init.init }}{% include 'generic.html' with { func: init } only %}({% for param in init.params %}{% include 'param.html' %}{% if true != loop.last %}, {% endif %}{% endfor %})</code>
+{% if init.comment %}
+<div class="comment">
+    {{ init.comment | rst }}
+</div>
+{% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if type.properties | static is not empty %}
+<h3>Static Variables</h3>
+{% for var in type.properties | static %}
+{% include 'var.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.properties | instance is not empty %}
+<h3>Instance Variables</h3>
+{% for var in type.properties | instance %}
+{% include 'var.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.functions | static is not empty %}
+<h3>Static Methods</h3>
+{% for func in type.functions | static %}
+{% include 'func-include.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.functions | instance is not empty %}
+<h3>Instance Methods</h3>
+{% for func in type.functions | instance %}
+{% include 'func-include.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.subscripts is not empty %}
+<h3>Subscripts</h3>
+{% for sub in type.subscripts %}
+{% include 'subscript-include.html' %}
+{% endfor %}
+{% endif %}
+
+{% if type.operators is not empty %}
+<h3>Operators</h3>
+{% for op in type.operators %}
+{% for func in op.declarations %}
+{% include 'func-include.html' %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+

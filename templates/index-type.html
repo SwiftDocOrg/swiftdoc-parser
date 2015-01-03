@@ -1,0 +1,13 @@
+{% set groups = 2 %}
+{% set size = (items|length + 1) // groups %}
+<div class="row">
+{% for i in 1..groups %}
+<div class="col-sm-6">
+<ul class="main-list">
+{% for item in items | slice((i - 1) * size, size) %}
+<li><a href="{{ root }}/{{ path }}/{{ item.name }}/">{{ item.name }}</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endfor %}
+</div>
