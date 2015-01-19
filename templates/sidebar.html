@@ -45,7 +45,7 @@
     <div id="collapseOperators" class="panel-collapse collapse">
       <div class="panel-body list-group">
         {% for item in items.operator %}
-        <a href="/operator/{{ item.name | opname }}/" class="list-group-item">{{ item.name }}</a>
+        <a href="/operator/{{ item.slug }}/" class="list-group-item">{{ item.name }}</a>
         {% endfor %}
       </div>
     </div>

@@ -5,7 +5,7 @@
 <div class="col-sm-3 col-xs-6">
 <ul class="main-list">
 {% for item in operators | slice((i - 1) * size, size) %}
-<li><a href="{{ root }}/operator/{{ item.name | opname }}/">{{ item.name | escape }}</a></li>
+<li><a href="{{ root }}/operator/{{ item.slug }}/">{{ item.name | escape }}</a></li>
 {% endfor %}
 </ul>
 </div>
