@@ -56,7 +56,7 @@ parsedData = parser.finalize(parsedData);
 
 // output JSON blob and stop if that's the request
 if (argv['json-only']) {
-    console.log(JSON.stringify(parsedData));
+    console.log(JSON.stringify(parsedData, null, 4));
     return;
 }
 
