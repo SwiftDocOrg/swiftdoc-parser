@@ -18,8 +18,8 @@ describe('Parser', function() {
     describe('operators', function() {
 
         var plus        = parsedData.operators[0];
-        var increment   = parsedData.operators[1];
-        var equality    = parsedData.operators[2];
+        var equality    = parsedData.operators[1];
+        var increment   = parsedData.operators[2];
 
         it('count', function() {
             expect(parsedData.operators.length).to.equal(3);
