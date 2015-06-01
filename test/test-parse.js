@@ -88,7 +88,7 @@ describe('Parser', function() {
     describe('types + protocols', function() {
         
         it('count', function() {
-            expect(Object.keys(parsedData.types).length).to.equal(41);
+            expect(Object.keys(parsedData.types).length).to.equal(42);
         });
         
         describe('`Array`', function() {
@@ -166,6 +166,22 @@ describe('Parser', function() {
             
         });
         
+        describe('`Range`', function() {
+        	var rangeData = parsedData.types['Range'];
+
+            it('type', function() {
+                expect(rangeData.kind).to.equal('struct');
+            });
+
+			it('property count', function() {
+                expect(rangeData.properties.length).to.equal(5);
+            });
+
+        	it('property mutability', function() {
+	            expect(rangeData.properties.firstElementNamed('isEmpty').readonly).to.equal(true);
+	            expect(rangeData.properties.firstElementNamed('startIndex').readonly).to.equal(false);
+        	});
+        });
         
     });
 });
