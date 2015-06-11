@@ -100,3 +100,27 @@
 {% endfor %}
 {% endif %}
 
+{% if type.imp is not empty %}
+<h3>Default Implementations</h3>
+
+{% for imp in type.imp %}
+
+{% if imp.conforming != '*' %}
+<h4>Where {{ imp.conforming }}<h4>
+{% endif %}
+
+{% for func in imp.functions %}
+{% include 'func-include.html' %}
+{% endfor %}
+
+{% for var in imp.properties %}
+{% include 'var.html' %}
+{% endfor %}
+
+{% for sub in imp.subscripts %}
+{% include 'subscript-include.html' %}
+{% endfor %}
+
+{% endfor %}
+
+{% endif %}
