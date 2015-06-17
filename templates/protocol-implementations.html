@@ -1,0 +1,16 @@
+
+{% if imp.conforming != '*' %}
+<h4>Where {{ imp.conforming }}</h4>
+{% endif %}
+
+{% for func in imp.functions %}
+{% include 'func-include.html' %}
+{% endfor %}
+
+{% for var in imp.properties %}
+{% include 'var.html' %}
+{% endfor %}
+
+{% for sub in imp.subscripts %}
+{% include 'subscript-include.html' %}
+{% endfor %}
