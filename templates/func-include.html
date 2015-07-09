@@ -1,4 +1,4 @@
-<div class="declaration">
+<div class="declaration" id="func-{{ func.name }}">
 <code class="language-swift">{{ func.attr | withSpaceAfter }}{{ func.note | withSpaceAfter }}{{ func.place | withSpaceAfter }}func {{ func.name | escape }}{% include 'generic.html' %}({%
     if func.params is not empty %}{% 
         for param in func.params %}{% 

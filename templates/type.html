@@ -17,7 +17,7 @@
 {% endif %}
 
 {% if type.aliases is not empty %}
-<h3>Associated types</h3>
+<h3 id="aliases">Associated types</h3>
 {% for alias in type.aliases %}
 <div class="declaration">
 <code class="language-swift">typealias {{ alias.name | escape }}{% if alias.proto %} : {{ alias.proto | escape }}{% endif %}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
@@ -36,7 +36,7 @@
 {% endif %}
 
 {% if type.cases is not empty %}
-<h3>Cases</h3>
+<h3 id="cases">Cases</h3>
 {% for case in type.cases %}
 {% include 'case.html' %}
 {% endfor %}

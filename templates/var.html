@@ -1,4 +1,4 @@
-<div class="declaration">
+<div class="declaration" id="prop-{{ var.name }}">
 <code class="language-swift">{{ var.stat | withSpaceAfter }}{{ var.kind }} {{ var.name | escape }}: {{ var.type | escape }} { get {% if not var.readonly %}set {% endif %}}</code>
 {% if var.comment %}
 <div class="comment">
