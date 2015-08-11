@@ -3,6 +3,6 @@
     "url-prefix": "/",
     "source-files": [
         "data/stdlib/swiftlang-602.0.49.6.txt",
-        "data/addenda/foundation.txt"
+        "data/addenda/1.2/foundation.txt"
     ]
 }
