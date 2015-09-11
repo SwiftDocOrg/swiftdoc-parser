@@ -2,6 +2,6 @@
     "output-dir": "output-dir/swift-2",
     "url-prefix": "/swift-2/",
     "source-files": [
-        "data/stdlib/swiftlang-700.0.52.2.txt"
+        "data/stdlib/swiftlang-700.0.57.3.txt"
     ]
 }

@@ -4,7 +4,7 @@
         for param in func.params %}{% 
             include 'param.html' %}{% if true != loop.last %}, {% endif %}{% 
         endfor %}{%
-    endif %}){% if func.ret is not empty %} -> {{ func.ret.line | escape }}{% endif %}</code>
+    endif %}) {{ func.throws | withSpaceAfter }}{% if func.ret is not empty %}-> {{ func.ret.line | escape }}{% endif %}</code>
 {% if func.comment %}
 <div class="comment">
     {{ func.comment | rst }}
