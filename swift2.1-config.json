@@ -2,7 +2,7 @@
     "output-dir": "output-dir/v2.1",
     "url-prefix": "/v2.1/",
     "source-files": [
-        "data/stdlib/swiftlang-700.1.101.6.txt",
+        "data/stdlib/swiftlang-700.1.101.15.txt",
         "data/addenda/2.0/foundation.txt"
     ]
 }

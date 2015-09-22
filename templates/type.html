@@ -1,25 +1,33 @@
-<code class="language-swift">{{ type.kind }} {{ type.name }}{% include 'generic.html' with { func: type } only %} { ... }</code>
+<div class="intro-declaration"><code class="language-swift">{{ type.kind }} {{ type.name }}{% include 'generic.html' with { func: type } only %}</code></div>
 
 {% if type.comment is not empty %}
-<div class="comment">
+<div class="discussion comment">
     {{ type.comment | rst }}
 </div>
 {% endif %}
 
+<table class="standard">
 {% if type.inherits is not empty or hasHierarchy %}
-<h3>Inheritance</h3>
-{% if type.inherits is not empty %}
-<code class="inherits">{% for inh in type.inherits %}{{ inh }}{% if true != loop.last %}, {% endif %}{% endfor %}</code>
+<tr>
+<th id="inheritance">Inheritance</th>
+<td>
+{% if type.allInherits is not empty %}
+<code class="inherits">{% for inh in type.allInherits %}{{ inh }}{% if true != loop.last %}, {% endif %}{% endfor %}</code>
 {% endif %}
 {% if hasHierarchy %}
-<span class="viz"><a href="hierarchy/">Protocol hierarchy</a></span>
+<span class="viz"><a href="hierarchy/">View Protocol Hierarchy &rarr;</a></span>
 {% endif %}
+</td>
+</tr>
 {% endif %}
 
 {% if type.aliases is not empty %}
-<h3 id="aliases">Associated types</h3>
+<tr>
+<th id="aliases">Associated Types</th>
+<td>
+<span id="aliasesmark"></span>
 {% for alias in type.aliases %}
-<div class="declaration">
+<div class="declaration{% if alias.inherited %} inherited{% endif %}">
 <code class="language-swift">typealias {{ alias.name | escape }}{% if alias.proto %} : {{ alias.proto | escape }}{% endif %}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
 {% if alias.comment %}
 <div class="comment">
@@ -28,12 +36,23 @@
 {% endif %}
 </div>
 {% endfor %}
+</td>
+</tr>
 {% endif %}
 
 {% if type.types is not empty %}
-<h3>Nested types</h3>
-<code class="nested">{% for nested in type.types %}{{ nested }}{% if true != loop.last %}, {% endif %}{% endfor %}</code>
+<tr>
+<th>Nested Types</th>
+<td><code class="nested">{% for nested in type.types %}{{ nested }}{% if true != loop.last %}, {% endif %}{% endfor %}</code></td>
+</tr>
 {% endif %}
+
+<tr>
+<th>Import</th>
+<td><code class="language-swift">import Swift</code></td>
+</tr>
+
+</table>
 
 {% if type.cases is not empty %}
 <h3 id="cases">Cases</h3>
@@ -45,14 +64,7 @@
 {% if type.inits is not empty %}
 <h3>Initializers</h3>
 {% for init in type.inits %}
-<div class="declaration">
-<code class="language-swift">{{ init.init }}{% include 'generic.html' with { func: init } only %}({% for param in init.params %}{% include 'param.html' %}{% if true != loop.last %}, {% endif %}{% endfor %})</code>
-{% if init.comment %}
-<div class="comment">
-    {{ init.comment | rst }}
-</div>
-{% endif %}
-</div>
+{% include 'init.html' %}
 {% endfor %}
 {% endif %}
 
@@ -70,6 +82,13 @@
 {% endfor %}
 {% endif %}
 
+{% if type.subscripts is not empty %}
+<h3>Subscripts</h3>
+{% for sub in type.subscripts %}
+{% include 'subscript-include.html' %}
+{% endfor %}
+{% endif %}
+
 {% if type.functions | static is not empty %}
 <h3>Static Methods</h3>
 {% for func in type.functions | static %}
@@ -81,13 +100,6 @@
 <h3>Instance Methods</h3>
 {% for func in type.functions | instance %}
 {% include 'func-include.html' %}
-{% endfor %}
-{% endif %}
-
-{% if type.subscripts is not empty %}
-<h3>Subscripts</h3>
-{% for sub in type.subscripts %}
-{% include 'subscript-include.html' %}
 {% endfor %}
 {% endif %}
 
@@ -105,7 +117,8 @@
 
 {% include 'protocol-implementations.html' with { 'imp': type.imp["*"] } %}
 
-{% for imp in type.imp %}
+{% for imp_key in type.imp|keys|sort %}
+{% set imp = type.imp[imp_key] %}
 
 {% if imp.conforming != '*' %}
 {% include 'protocol-implementations.html' %}

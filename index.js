@@ -3,7 +3,8 @@
 // includes
 var fs = require('fs'),
     parser = require('./lib/swiftdoc-parser'),
-    builder = require('./lib/swiftdoc-builder');
+    builder = require('./lib/swiftdoc-builder'),
+    execsyncs = require("execsyncs");
     
 // command-line options
 var yargs = require('yargs')
@@ -14,6 +15,10 @@ var yargs = require('yargs')
         .options('json-only', {
             type: 'boolean',
             describe: 'Output parsed headers as JSON only',
+        })
+        .options('skip-graphs', {
+            type: 'boolean',
+            describe: 'Suppress graph generation',
         })
         .options('config', {
             type: 'string',
@@ -63,10 +68,11 @@ if (argv['json-only']) {
 // set output-related configuration items
 builder.setOutputDir(config['output-dir'] || argv['output-dir']);
 builder.setURLPrefix(config['url-prefix'] || argv['url-prefix']);
-
-// build output and log the resulting message    
-if (builder.build(parsedData)) {
-    
+if (argv['skip-graphs']) {
+    builder.setOutputGraphs(false);
 }
 
+// build output and notify
+builder.build(parsedData)
+execsyncs('osascript -e \'display notification "Finished build!" with title "swiftdoc-parser"\'');
 

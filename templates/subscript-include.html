@@ -1,8 +1,17 @@
-<div class="declaration">
-<code class="language-swift">subscript{% include 'generic.html' %}({% for param in sub.params %}{% include 'param.html' %}{% if true != loop.last %}, {% endif %}{% endfor %}){% if sub.ret is not empty %} -> {{ sub.ret.line | escape }}{% endif %}</code>
-{% if sub.comment %}
-<div class="comment">
+<div class="declaration{% if sub.inherited %} inherited{% endif %}" id="subscript-{{ urlprefix }}{{ sub.uniqueSignatureURL }}">
+<a class="toggle-link" data-toggle="collapse" href="#comment-subscript-{{ urlprefix }}{{ sub.uniqueSignatureURL }}">{{ sub.uniqueSignature | escape }}</a>{% if sub.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
+
+<div class="comment collapse" id="comment-subscript-{{ urlprefix }}{{ sub.uniqueSignatureURL }}"><div class="p">
     {{ sub.comment | rst }}
-</div>
-{% endif %}
+
+    <h4>Declaration</h4>    
+    <code class="language-swift">{{ sub.declaration | escape }}</code>
+    
+    {% if sub.implementationSource %}
+    <h4>Declared In</h4>
+    {% for source in sub.implementationSource %}{% if loop.index != 1 %},{% endif %}
+    <a href="../../protocol/{{ source }}/"><code>{{ source }}</code></a>{% endfor %}
+    {% endif %}
+
+</div></div>
 </div>

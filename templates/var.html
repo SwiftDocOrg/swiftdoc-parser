@@ -1,8 +1,17 @@
-<div class="declaration" id="prop-{{ var.name }}">
-<code class="language-swift">{{ var.stat | withSpaceAfter }}{{ var.kind }} {{ var.name | escape }}: {{ var.type | escape }} { get {% if not var.readonly %}set {% endif %}}</code>
-{% if var.comment %}
-<div class="comment">
+<div class="declaration{% if var.inherited %} inherited{% endif %}" id="{{ urlprefix }}{{ var.uniqueSignatureURL }}">
+<a class="toggle-link" data-toggle="collapse" href="#comment-{{ urlprefix }}{{ var.uniqueSignatureURL }}">{{ var.uniqueSignature | escape }}</a>{% if var.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
+<div class="comment collapse" id="comment-{{ urlprefix }}{{ var.uniqueSignatureURL }}"><div class="p">
     {{ var.comment | rst }}
-</div>
-{% endif %}
+
+    <h4>Declaration</h4>    
+    <code class="language-swift">{{ var.declaration | escape }}</code>
+
+    {% if var.implementationSource %}
+    <h4>Declared In</h4>
+    {% for source in var.implementationSource %}
+    {% if loop.index != 1 %},{% endif %}
+    <a href="../../protocol/{{ source }}/"><code>{{ source }}</code></a>
+    {% endfor %}
+    {% endif %}
+</div></div>
 </div>

@@ -1,0 +1,8 @@
+{
+    "output-dir": "output-dir/v2.2",
+    "url-prefix": "/v2.2/",
+    "source-files": [
+        "data/stdlib/swift-2.2-maybe.txt",
+        "data/addenda/2.0/foundation.txt"
+    ]
+}

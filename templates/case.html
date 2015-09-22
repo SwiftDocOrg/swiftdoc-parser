@@ -1,8 +1,11 @@
-<div class="declaration">
-<code class="language-swift">case {{ case.name }}{% if case.associated %}({{ case.associated }}){% endif %}</code>
+<div class="declaration" id="case-{{ case.name }}">
+<a class="toggle-link" data-toggle="collapse" href="#comment-case-{{ case.name }}">case {{ case.name }}{% if case.associated %}({{ case.associated }}){% endif %}</a>
 {% if case.comment %}
-<div class="comment">
+<div class="comment collapse" id="comment-case-{{ case.name }}"><div class="p">
     {{ case.comment | rst }}
-</div>
+
+    <h4>Declaration</h4>    
+    <code class="language-swift">{{ case.declaration | escape }}</code>
+</div></div>
 {% endif %}
 </div>

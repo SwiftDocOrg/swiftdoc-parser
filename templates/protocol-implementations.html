@@ -1,10 +1,13 @@
+{% if imp.inits or imp.properties or imp.subscripts or imp.functions %}
+
+{% set urlprefix = imp.urlprefix %}
 
 {% if imp.conforming != '*' %}
 <h4>Where {{ imp.conforming }}</h4>
 {% endif %}
 
-{% for func in imp.functions %}
-{% include 'func-include.html' %}
+{% for init in imp.inits %}
+{% include 'init.html' %}
 {% endfor %}
 
 {% for var in imp.properties %}
@@ -14,3 +17,9 @@
 {% for sub in imp.subscripts %}
 {% include 'subscript-include.html' %}
 {% endfor %}
+
+{% for func in imp.functions %}
+{% include 'func-include.html' %}
+{% endfor %}
+
+{% endif %}

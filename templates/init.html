@@ -1,0 +1,17 @@
+<div class="declaration{% if init.inherited %} inherited{% endif %}" id="{{ urlprefix }}{{ init.uniqueSignatureURL }}">
+<a class="toggle-link" data-toggle="collapse" href="#comment-{{ urlprefix }}{{ init.uniqueSignatureURL }}">{{ init.uniqueSignature | escape }}</a>{% if init.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
+<div class="comment collapse" id="comment-{{ urlprefix }}{{ init.uniqueSignatureURL }}"><div class="p">
+    {{ init.comment | rst }}
+
+    <h4>Declaration</h4>    
+    <code class="language-swift">{{ init.declaration | escape }}</code>
+
+    {% if init.implementationSource %}
+    <h4>Declared In</h4>
+    {% for source in init.implementationSource %}
+    {% if loop.index != 1 %},{% endif %}
+    <a href="../../protocol/{{ source }}/"><code>{{ source }}</code></a>
+    {% endfor %}
+    {% endif %}
+</div></div>
+</div>
