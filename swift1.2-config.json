@@ -1,6 +1,6 @@
 {
-    "output-dir": "output-dir",
-    "url-prefix": "/",
+    "output-dir": "output-dir/v1.2",
+    "url-prefix": "/v1.2/",
     "source-files": [
         "data/stdlib/swiftlang-602.0.49.6.txt",
         "data/addenda/1.2/foundation.txt"
