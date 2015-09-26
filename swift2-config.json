@@ -1,7 +1,0 @@
-{
-    "output-dir": "output-dir",
-    "url-prefix": "/",
-    "source-files": [
-        "data/stdlib/swiftlang-700.0.59.txt"
-    ]
-}
