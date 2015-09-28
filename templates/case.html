@@ -1,5 +1,5 @@
 <div class="declaration">
-<code class="language-swift">case {{ case.name }}{{ case.associated }}</code>
+<code class="language-swift">case {{ case.name }}{% if case.associated %}({{ case.associated }}){% endif %}</code>
 {% if case.comment %}
 <div class="comment">
     {{ case.comment | rst }}
