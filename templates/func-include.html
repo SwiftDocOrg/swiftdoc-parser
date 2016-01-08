@@ -1,5 +1,5 @@
 <div class="declaration{% if func.inherited %} inherited{% endif %}" id="func-{{ urlprefix }}{{ func.uniqueSignatureURL }}">
-<a class="toggle-link" data-toggle="collapse" href="#comment-func-{{ urlprefix }}{{ func.uniqueSignatureURL }}">{{ func.attr | withSpaceAfter }}{{ func.note | withSpaceAfter }}{{ func.place | withSpaceAfter }}func {{ func.uniqueSignature | escape }}</a>
+<a class="toggle-link" data-toggle="collapse" href="#comment-func-{{ urlprefix }}{{ func.uniqueSignatureURL }}">{{ func.attr | withSpaceAfter }}{{ func.note | withSpaceAfter }}{{ func.place | withSpaceAfter }}func {{ func.uniqueSignature | escape | addSoftBreaks }}</a>
     {% if func.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
     
 <div class="comment collapse" id="comment-func-{{ urlprefix }}{{ func.uniqueSignatureURL }}"><div class="p">

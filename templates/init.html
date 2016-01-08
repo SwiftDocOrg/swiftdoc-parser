@@ -1,5 +1,5 @@
 <div class="declaration{% if init.inherited %} inherited{% endif %}" id="{{ urlprefix }}{{ init.uniqueSignatureURL }}">
-<a class="toggle-link" data-toggle="collapse" href="#comment-{{ urlprefix }}{{ init.uniqueSignatureURL }}">{{ init.uniqueSignature | escape }}</a>{% if init.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
+<a class="toggle-link" data-toggle="collapse" href="#comment-{{ urlprefix }}{{ init.uniqueSignatureURL }}">{{ init.uniqueSignature | escape | addSoftBreaks }}</a>{% if init.defaultImplementation == false %} <span class="required">Required</span>{% endif %}
 <div class="comment collapse" id="comment-{{ urlprefix }}{{ init.uniqueSignatureURL }}"><div class="p">
     {{ init.comment | rst }}
 
