@@ -113,7 +113,12 @@
 {% endif %}
 
 {% if type.imp is not empty %}
+{% if type.kind == 'protocol' %}
 <h3>Default Implementations</h3>
+{% else %}
+<h3>Conditionally Inherited Items</h3>
+<p>The initializers, methods, and properties listed below may be available on this type under certain conditions (such as methods that are available on `Array` when its elements are `Equatable`) or may not ever be available if that determination is beyond SwiftDoc.org's capabilities.</p>
+{% endif %}
 
 {% include 'protocol-implementations.html' with { 'imp': type.imp["*"] } %}
 
