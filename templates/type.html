@@ -28,7 +28,7 @@
 <span id="aliasesmark"></span>
 {% for alias in type.aliases %}
 <div class="declaration{% if alias.inherited %} inherited{% endif %}">
-<code class="language-swift">typealias {{ alias.name | escape }}{% if alias.proto %} : {{ alias.proto | escape }}{% endif %}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
+<code class="language-swift">{{ alias.name | escape }}{% if alias.proto %} : {{ alias.proto | escape }}{% endif %}{% if alias.type %} = {{ alias.type | escape }}{% endif %}</code>
 {% if alias.comment %}
 <div class="comment">
     {{ alias.comment | rst }}
