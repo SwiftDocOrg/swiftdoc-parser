@@ -1,0 +1,8 @@
+{
+    "output-dir": "output-dir/v3.0",
+    "url-prefix": "/v3.0/",
+    "source-files": [
+        "data/stdlib/swift-master-0e2dc7a.txt",
+        "data/addenda/2.0/foundation.txt"
+    ]
+}
