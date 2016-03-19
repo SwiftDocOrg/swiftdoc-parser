@@ -50,6 +50,11 @@ if (sources.length == 0) {
     return;
 }
 
+// toggle Swift 3 API parsing
+if (config['swift-3-api']) {
+    parser.useSwift3APIs();
+}
+
 // parse each source file, building up a parsed data object
 var parsedData = sources.reduce(function(previous, current) {
     var data = fs.readFileSync(current, 'utf8');
