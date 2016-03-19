@@ -2,6 +2,6 @@
     "output-dir": "output-dir/v3.0",
     "url-prefix": "/v3.0/",
     "source-files": [
-        "data/stdlib/swift-master-f7d0263.txt"
+        "data/stdlib/swift-master-b92870f.txt"
     ]
 }
