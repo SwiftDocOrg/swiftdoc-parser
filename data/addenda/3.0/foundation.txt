@@ -1,0 +1,397 @@
+extension String {
+    /// *[Foundation]* Returns an Array of the encodings string objects support
+    /// in the application’s environment.
+    @warn_unused_result
+    public static func availableStringEncodings() -> [NSStringEncoding]
+    /// *[Foundation]* Returns the C-string encoding assumed for any method accepting
+    /// a C string as an argument.
+    @warn_unused_result
+    public static func defaultCStringEncoding() -> NSStringEncoding
+    /// Returns a human-readable string giving the name of a given encoding.
+    @warn_unused_result
+    public static func localizedName(ofStringEncoding encoding: NSStringEncoding) -> String
+    /// *[Foundation]* Returns a string created by using a given format string as a
+    /// template into which the remaining argument values are substituted
+    /// according to the user's default locale.
+    @warn_unused_result
+    public static func localizedStringWithFormat(format: String, _ arguments: CVarArg...) -> String
+    /// *[Foundation]* Produces a string created by copying the data from a given
+    /// C array of UTF8-encoded bytes.
+    public init?(UTF8String bytes: UnsafePointer<CChar>)
+    /// *[Foundation]* Returns a Boolean value that indicates whether the
+    /// `String` can be converted to a given encoding without loss of
+    /// information.
+    @warn_unused_result
+    public func canBeConverted(toEncoding encoding: NSStringEncoding) -> Bool
+    /// *[Foundation]* Produce a string with the first character from each word changed
+    /// to the corresponding uppercase value.
+    public var capitalized: String { get }
+    /// *[Foundation]* A capitalized representation of the `String` that is produced
+    /// using the current locale.
+    public var localizedCapitalized: String { get }
+    /// *[Foundation]* Returns a capitalized representation of the `String`
+    /// using the specified locale.
+    @warn_unused_result
+    public func capitalizedString(with locale: NSLocale?) -> String
+    /// *[Foundation]* Returns the result of invoking `compare:options:` with
+    /// `NSCaseInsensitiveSearch` as the only option.
+    @warn_unused_result
+    public func caseInsensitiveCompare(aString: String) -> NSComparisonResult
+    /// *[Foundation]* Returns a string containing characters the `String` and a
+    /// given string have in common, starting from the beginning of each
+    /// up to the first characters that aren’t equivalent.
+    @warn_unused_result
+    public func commonPrefix(with aString: String, options: NSStringCompareOptions = default) -> String
+    /// *[Foundation]* Compares the string using the specified options and
+    /// returns the lexical ordering for the range.
+    @warn_unused_result
+    public func compare(aString: String, options mask: NSStringCompareOptions = default, range: Range<Index>? = default, locale: NSLocale? = default) -> NSComparisonResult
+    /// *[Foundation]* Interprets the `String` as a path in the file system and
+    /// attempts to perform filename completion, returning a numeric
+    /// value that indicates whether a match was possible, and by
+    /// reference the longest path that matches the `String`.
+    /// Returns the actual number of matching paths.
+    @warn_unused_result
+    public func completePath(into outputName: UnsafeMutablePointer<String> = default, caseSensitive: Bool, matchesInto matchesIntoArray: UnsafeMutablePointer<[String]> = default, filterTypes: [String]? = default) -> Int
+    /// *[Foundation]* Returns an array containing substrings from the `String`
+    /// that have been divided by characters in a given set.
+    @warn_unused_result
+    public func componentsSeparatedByCharacters(in separator: NSCharacterSet) -> [String]
+    /// *[Foundation]* Returns an array containing substrings from the `String`
+    /// that have been divided by a given separator.
+    public func componentsSeparated(by separator: String) -> [String]
+    /// *[Foundation]* Returns a representation of the `String` as a C string
+    /// using a given encoding.
+    @warn_unused_result
+    public func cString(usingEncoding encoding: NSStringEncoding) -> [CChar]?
+    /// *[Foundation]* Returns an `NSData` object containing a representation of
+    /// the `String` encoded using a given encoding.
+    @warn_unused_result
+    public func data(usingEncoding encoding: NSStringEncoding, allowLossyConversion: Bool = default) -> NSData?
+    /// *[Foundation]* Returns a string made by normalizing the `String`’s
+    /// contents using Form D.
+    public var decomposedStringWithCanonicalMapping: String { get }
+    /// *[Foundation]* Returns a string made by normalizing the `String`’s
+    /// contents using Form KD.
+    public var decomposedStringWithCompatibilityMapping: String { get }
+    /// *[Foundation]* Enumerates all the lines in a string.
+    public func enumerateLines(body: (line: String, stop: inout Bool) -> ())
+    /// *[Foundation]* Performs linguistic analysis on the specified string by
+    /// enumerating the specific range of the string, providing the
+    /// Block with the located tags.
+    public func enumerateLinguisticTags(in range: Range<Index>, scheme tagScheme: String, options opts: NSLinguisticTaggerOptions = default, orthography: NSOrthography? = default, _ body: (String, Range<Index>, Range<Index>, inout Bool) -> ())
+    /// *[Foundation]* Enumerates the substrings of the specified type in the
+    /// specified range of the string.
+    public func enumerateSubstrings(in range: Range<Index>, options opts: NSStringEnumerationOptions = default, _ body: (substring: String?, substringRange: Range<Index>, enclosingRange: Range<Index>, inout Bool) -> ())
+    /// *[Foundation]* Returns the fastest encoding to which the `String` may be
+    /// converted without loss of information.
+    public var fastestEncoding: NSStringEncoding { get }
+    /// *[Foundation]* Writes the given `range` of characters into `buffer` in a given
+    /// `encoding`, without any allocations.  Does not NULL-terminate.
+    ///
+    /// - Parameter buffer: A buffer into which to store the bytes from
+    ///   the receiver. The returned bytes are not NUL-terminated.
+    ///
+    /// - Parameter maxBufferCount: The maximum number of bytes to write
+    ///   to buffer.
+    ///
+    /// - Parameter usedBufferCount: The number of bytes used from
+    ///   buffer. Pass `nil` if you do not need this value.
+    ///
+    /// - Parameter encoding: The encoding to use for the returned bytes.
+    ///
+    /// - Parameter options: A mask to specify options to use for
+    ///   converting the receiver’s contents to `encoding` (if conversion
+    ///   is necessary).
+    ///
+    /// - Parameter range: The range of characters in the receiver to get.
+    ///
+    /// - Parameter leftover: The remaining range. Pass `nil` If you do
+    ///   not need this value.
+    ///
+    /// - Returns: `true` iff some characters were converted.
+    ///
+    /// - Note: Conversion stops when the buffer fills or when the
+    ///   conversion isn't possible due to the chosen encoding.
+    ///
+    /// - Note: will get a maximum of `min(buffer.count, maxLength)` bytes.
+    public func getBytes(buffer: inout [UInt8], maxLength maxBufferCount: Int, usedLength usedBufferCount: UnsafeMutablePointer<Int>, encoding: NSStringEncoding, options: NSStringEncodingConversionOptions = default, range: Range<Index>, remaining leftover: UnsafeMutablePointer<Range<Index>>) -> Bool
+    /// *[Foundation]* Converts the `String`’s content to a given encoding and
+    /// stores them in a buffer.
+    /// - Note: will store a maximum of `min(buffer.count, maxLength)` bytes.
+    public func getCString(buffer: inout [CChar], maxLength: Int, encoding: NSStringEncoding) -> Bool
+    /// *[Foundation]* Returns by reference the beginning of the first line and
+    /// the end of the last line touched by the given range.
+    public func getLineStart(start: UnsafeMutablePointer<Index>, end: UnsafeMutablePointer<Index>, contentsEnd: UnsafeMutablePointer<Index>, for range: Range<Index>)
+    /// *[Foundation]* Returns by reference the beginning of the first paragraph
+    /// and the end of the last paragraph touched by the given range.
+    public func getParagraphStart(start: UnsafeMutablePointer<Index>, end: UnsafeMutablePointer<Index>, contentsEnd: UnsafeMutablePointer<Index>, for range: Range<Index>)
+    /// *[Foundation]* An unsigned integer that can be used as a hash table address.
+    public var hash: Int { get }
+    /// *[Foundation]* Produces an initialized `NSString` object equivalent to the given
+    /// `bytes` interpreted in the given `encoding`.
+    public init?<S : SequenceType where S.Generator.Element == UInt8>(bytes: S, encoding: NSStringEncoding)
+    /// *[Foundation]* Produces an initialized `String` object that contains a
+    /// given number of bytes from a given buffer of bytes interpreted
+    /// in a given encoding, and optionally frees the buffer.  WARNING:
+    /// this initializer is not memory-safe!
+    public init?(bytesNoCopy bytes: UnsafeMutablePointer<Void>, length: Int, encoding: NSStringEncoding, freeWhenDone flag: Bool)
+    /// *[Foundation]* Returns an initialized `String` object that contains a
+    /// given number of characters from a given array of Unicode
+    /// characters.
+    public init(utf16CodeUnits: UnsafePointer<unichar>, count: Int)
+    /// *[Foundation]* Returns an initialized `String` object that contains a given
+    /// number of characters from a given array of UTF-16 Code Units
+    public init(utf16CodeUnitsNoCopy: UnsafePointer<unichar>, count: Int, freeWhenDone flag: Bool)
+    /// *[Foundation]* Produces a string created by reading data from the file at a
+    /// given path interpreted using a given encoding.
+    public init(contentsOfFile path: String, encoding enc: NSStringEncoding) throws
+    /// *[Foundation]* Produces a string created by reading data from the file at
+    /// a given path and returns by reference the encoding used to
+    /// interpret the file.
+    public init(contentsOfFile path: String, usedEncoding: UnsafeMutablePointer<NSStringEncoding> = default) throws
+    /// *[Foundation]* Produces a string created by reading data from a given URL
+    /// interpreted using a given encoding.  Errors are written into the
+    /// inout `error` argument.
+    public init(contentsOf url: NSURL, encoding enc: NSStringEncoding) throws
+    /// *[Foundation]* Produces a string created by reading data from a given URL
+    /// and returns by reference the encoding used to interpret the
+    /// data.  Errors are written into the inout `error` argument.
+    public init(contentsOf url: NSURL, usedEncoding enc: UnsafeMutablePointer<NSStringEncoding> = default) throws
+    /// *[Foundation]* Produces a string containing the bytes in a given C array,
+    /// interpreted according to a given encoding.
+    public init?(cString: UnsafePointer<CChar>, encoding enc: NSStringEncoding)
+    /// *[Foundation]* Returns a `String` initialized by converting given `data` into
+    /// Unicode characters using a given `encoding`.
+    public init?(data: NSData, encoding: NSStringEncoding)
+    /// *[Foundation]* Returns a `String` object initialized by using a given
+    /// format string as a template into which the remaining argument
+    /// values are substituted.
+    public init(format: String, _ arguments: CVarArg...)
+    /// *[Foundation]* Returns a `String` object initialized by using a given
+    /// format string as a template into which the remaining argument
+    /// values are substituted according to the user’s default locale.
+    public init(format: String, arguments: [CVarArg])
+    /// *[Foundation]* Returns a `String` object initialized by using a given
+    /// format string as a template into which the remaining argument
+    /// values are substituted according to given locale information.
+    public init(format: String, locale: NSLocale?, _ args: CVarArg...)
+    /// *[Foundation]* Returns a `String` object initialized by using a given
+    /// format string as a template into which the remaining argument
+    /// values are substituted according to given locale information.
+    public init(format: String, locale: NSLocale?, arguments: [CVarArg])
+    /// *[Foundation]* Returns the number of bytes required to store the
+    /// `String` in a given encoding.
+    @warn_unused_result
+    public func lengthOfBytes(usingEncoding encoding: NSStringEncoding) -> Int
+    /// *[Foundation]* Returns the range of characters representing the line or lines
+    /// containing a given range.
+    @warn_unused_result
+    public func lineRange(for aRange: Range<Index>) -> Range<Index>
+    /// *[Foundation]* Returns an array of linguistic tags for the specified
+    /// range and requested tags within the receiving string.
+    @warn_unused_result
+    public func linguisticTags(in range: Range<Index>, scheme tagScheme: String, options opts: NSLinguisticTaggerOptions = default, orthography: NSOrthography? = default, tokenRanges: UnsafeMutablePointer<[Range<Index>]> = default) -> [String]
+    /// *[Foundation]* Compares the string and a given string using a
+    /// case-insensitive, localized, comparison.
+    @warn_unused_result
+    public func localizedCaseInsensitiveCompare(aString: String) -> NSComparisonResult
+    /// *[Foundation]* Compares the string and a given string using a localized
+    /// comparison.
+    @warn_unused_result
+    public func localizedCompare(aString: String) -> NSComparisonResult
+    /// *[Foundation]* Compares strings as sorted by the Finder.
+    @warn_unused_result
+    public func localizedStandardCompare(string: String) -> NSComparisonResult
+    /// *[Foundation]* A lowercase version of the string that is produced using the current
+    /// locale.
+    public var localizedLowercase: String { get }
+    /// *[Foundation]* Returns a version of the string with all letters
+    /// converted to lowercase, taking into account the specified
+    /// locale.
+    @warn_unused_result
+    public func lowercaseString(with locale: NSLocale?) -> String
+    /// *[Foundation]* Returns the maximum number of bytes needed to store the
+    /// `String` in a given encoding.
+    @warn_unused_result
+    public func maximumLengthOfBytes(usingEncoding encoding: NSStringEncoding) -> Int
+    /// *[Foundation]* Returns the range of characters representing the
+    /// paragraph or paragraphs containing a given range.
+    @warn_unused_result
+    public func paragraphRange(for aRange: Range<Index>) -> Range<Index>
+    /// *[Foundation]* Returns a string made by normalizing the `String`’s
+    /// contents using Form C.
+    public var precomposedStringWithCanonicalMapping: String { get }
+    /// *[Foundation]* Returns a string made by normalizing the `String`’s
+    /// contents using Form KC.
+    public var precomposedStringWithCompatibilityMapping: String { get }
+    /// *[Foundation]* Parses the `String` as a text representation of a
+    /// property list, returning an NSString, NSData, NSArray, or
+    /// NSDictionary object, according to the topmost element.
+    @warn_unused_result
+    public func propertyList() -> AnyObject
+    /// *[Foundation]* Returns a dictionary object initialized with the keys and
+    /// values found in the `String`.
+    @warn_unused_result
+    public func propertyListFromStringsFileFormat() -> [String : String]
+    /// *[Foundation]* Finds and returns the range in the `String` of the first
+    /// character from a given character set found in a given range with
+    /// given options.
+    @warn_unused_result
+    public func rangeOfCharacter(from aSet: NSCharacterSet, options mask: NSStringCompareOptions = default, range aRange: Range<Index>? = default) -> Range<Index>?
+    /// *[Foundation]* Returns the range in the `String` of the composed
+    /// character sequence located at a given index.
+    @warn_unused_result
+    public func rangeOfComposedCharacterSequence(at anIndex: Index) -> Range<Index>
+    /// *[Foundation]* Returns the range in the string of the composed character
+    /// sequences for a given range.
+    @warn_unused_result
+    public func rangeOfComposedCharacterSequences(for range: Range<Index>) -> Range<Index>
+    /// *[Foundation]* Finds and returns the range of the first occurrence of a
+    /// given string within a given range of the `String`, subject to
+    /// given options, using the specified locale, if any.
+    @warn_unused_result
+    public func range(of aString: String, options mask: NSStringCompareOptions = default, range searchRange: Range<Index>? = default, locale: NSLocale? = default) -> Range<Index>?
+    /// *[Foundation]* Returns `true` if `self` contains `string`, taking the current locale
+    /// into account.
+    ///
+    /// This is the most appropriate method for doing user-level string searches,
+    /// similar to how searches are done generally in the system.  The search is
+    /// locale-aware, case and diacritic insensitive.  The exact list of search
+    /// options applied may change over time.
+    @warn_unused_result
+    public func localizedStandardContains(string: String) -> Bool
+    /// *[Foundation]* Finds and returns the range of the first occurrence of a given string,
+    /// taking the current locale into account.  Returns `nil` if the string was
+    /// not found.
+    ///
+    /// This is the most appropriate method for doing user-level string searches,
+    /// similar to how searches are done generally in the system.  The search is
+    /// locale-aware, case and diacritic insensitive.  The exact list of search
+    /// options applied may change over time.
+    @warn_unused_result
+    public func localizedStandardRange(of string: String) -> Range<Index>?
+    /// *[Foundation]* Returns the smallest encoding to which the `String` can
+    /// be converted without loss of information.
+    public var smallestEncoding: NSStringEncoding { get }
+    /// *[Foundation]* Returns a new string made from the `String` by replacing
+    /// all characters not in the specified set with percent encoded
+    /// characters.
+    @warn_unused_result
+    public func addingPercentEncoding(withAllowedCharacters allowedCharacters: NSCharacterSet) -> String?
+    /// *[Foundation]* Returns a representation of the `String` using a given
+    /// encoding to determine the percent escapes necessary to convert
+    /// the `String` into a legal URL string.
+    @available(*, deprecated, message="Use addingPercentEncoding(withAllowedCharacters:) instead, which always uses the recommended UTF-8 encoding, and which encodes for a specific URL component or subcomponent since each URL component or subcomponent has different rules for what characters are valid.")
+    public func addingPercentEscapes(usingEncoding encoding: NSStringEncoding) -> String?
+    /// *[Foundation]* Returns a string made by appending to the `String` a
+    /// string constructed from a given format string and the following
+    /// arguments.
+    @warn_unused_result
+    public func stringByAppendingFormat(format: String, _ arguments: CVarArg...) -> String
+    /// *[Foundation]* Returns a new string made by appending a given string to
+    /// the `String`.
+    @warn_unused_result
+    public func appending(aString: String) -> String
+    /// *[Foundation]* Returns a string with the given character folding options
+    /// applied.
+    @warn_unused_result
+    public func folding(options: NSStringCompareOptions = default, locale: NSLocale?) -> String
+    /// *[Foundation]* Returns a new string formed from the `String` by either
+    /// removing characters from the end, or by appending as many
+    /// occurrences as necessary of a given pad string.
+    @warn_unused_result
+    public func padding(toLength newLength: Int, with padString: String, startingAt padIndex: Int) -> String
+    /// *[Foundation]* Returns a new string made from the `String` by replacing
+    /// all percent encoded sequences with the matching UTF-8
+    /// characters.
+    public var removingPercentEncoding: String? { get }
+    /// *[Foundation]* Returns a new string in which the characters in a
+    /// specified range of the `String` are replaced by a given string.
+    @warn_unused_result
+    public func replacingCharacters(in range: Range<Index>, with replacement: String) -> String
+    /// *[Foundation]* Returns a new string in which all occurrences of a target
+    /// string in a specified range of the `String` are replaced by
+    /// another given string.
+    @warn_unused_result
+    public func replacingOccurrences(of target: String, with replacement: String, options: NSStringCompareOptions = default, range searchRange: Range<Index>? = default) -> String
+    /// *[Foundation]* Returns a new string made by replacing in the `String`
+    /// all percent escapes with the matching characters as determined
+    /// by a given encoding.
+    @available(*, deprecated, message="Use removingPercentEncoding instead, which always uses the recommended UTF-8 encoding.")
+    public func replacingPercentEscapes(usingEncoding encoding: NSStringEncoding) -> String?
+    /// *[Foundation]* Returns a new string made by removing from both ends of
+    /// the `String` characters contained in a given character set.
+    @warn_unused_result
+    public func trimmingCharacters(in set: NSCharacterSet) -> String
+    /// *[Foundation]* Returns a new string containing the characters of the
+    /// `String` from the one at a given index to the end.
+    @warn_unused_result
+    public func substring(from index: Index) -> String
+    /// *[Foundation]* Returns a new string containing the characters of the
+    /// `String` up to, but not including, the one at a given index.
+    @warn_unused_result
+    public func substring(to index: Index) -> String
+    /// *[Foundation]* Returns a string object containing the characters of the
+    /// `String` that lie within a given range.
+    @warn_unused_result
+    public func substring(with aRange: Range<Index>) -> String
+    /// *[Foundation]* An uppercase version of the string that is produced using the current
+    /// locale.
+    public var localizedUppercase: String { get }
+    /// *[Foundation]* Returns a version of the string with all letters
+    /// converted to uppercase, taking into account the specified
+    /// locale.
+    @warn_unused_result
+    public func uppercaseString(with locale: NSLocale?) -> String
+    /// *[Foundation]* Writes the contents of the `String` to a file at a given
+    /// path using a given encoding.
+    public func write(toFile path: String, atomically useAuxiliaryFile: Bool, encoding enc: NSStringEncoding) throws
+    /// *[Foundation]* Writes the contents of the `String` to the URL specified
+    /// by url using the specified encoding.
+    public func write(to url: NSURL, atomically useAuxiliaryFile: Bool, encoding enc: NSStringEncoding) throws
+    /// *[Foundation]* Perform string transliteration.
+    @warn_unused_result
+    public func applyingTransform(transform: String, reverse: Bool) -> String?
+    /// *[Foundation]* Returns `true` iff `other` is non-empty and contained within
+    /// `self` by case-sensitive, non-literal search.
+    ///
+    /// Equivalent to `self.range(of:other) != nil`
+    @warn_unused_result
+    public func contains(other: String) -> Bool
+    /// *[Foundation]* Returns `true` iff `other` is non-empty and contained within
+    /// `self` by case-insensitive, non-literal search, taking into
+    /// account the current locale.
+    ///
+    /// Locale-independent case-insensitive operation, and other needs,
+    /// can be achieved by calling `range(of:options:range:locale:)`.
+    ///
+    /// Equivalent to
+    ///
+    ///     self.range(of: other,
+    ///       options: .CaseInsensitiveSearch,
+    ///       locale: NSLocale.currentLocale()) != nil
+    @warn_unused_result
+    public func localizedCaseInsensitiveContains(other: String) -> Bool
+}
+
+extension String {
+    /// *[Foundation]*
+    public init(_ cocoaString: NSString)
+}
+
+extension Float {
+    /// *[Foundation]*
+    public init(_ number: NSNumber)
+    /// *[Foundation]*
+    public init(_ value: CGFloat)
+}
+
+extension Double {
+    /// *[Foundation]*
+    public init(_ number: NSNumber)
+    /// *[Foundation]*
+    public init(_ value: CGFloat)
+}
+
+

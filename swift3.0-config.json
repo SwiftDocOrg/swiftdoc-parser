@@ -1,7 +1,9 @@
 {
     "output-dir": "output-dir/v3.0",
     "url-prefix": "/v3.0/",
+    "swift-3-api": true,
     "source-files": [
-        "data/stdlib/swift-master-b92870f.txt"
+        "data/stdlib/swift-master-b92870f.txt",
+        "data/addenda/3.0/foundation.txt"
     ]
 }
