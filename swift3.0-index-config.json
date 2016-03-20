@@ -1,0 +1,9 @@
+{
+    "output-dir": "output-dir/v3indexing",
+    "url-prefix": "/v3indexing/",
+    "swift-3-api": true,
+    "source-files": [
+        "data/stdlib/swift-3-indexing-model-e63374f.txt",
+        "data/addenda/3.0/foundation.txt"
+    ]
+}
