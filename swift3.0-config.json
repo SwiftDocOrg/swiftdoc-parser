@@ -3,7 +3,7 @@
     "url-prefix": "/v3.0/",
     "swift-3-api": true,
     "source-files": [
-        "data/stdlib/swift-master-cc9d134.txt",
+        "data/stdlib/swift-master-30bd7bb.txt",
         "data/addenda/3.0/foundation.txt"
     ]
 }
