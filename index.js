@@ -4,7 +4,10 @@
 var fs = require('fs'),
     parser = require('./lib/swiftdoc-parser'),
     builder = require('./lib/swiftdoc-builder'),
-    execsyncs = require("execsyncs");
+    execsyncs = require("execsyncs"),
+    path = require('path');
+
+var appRoot = path.join(__dirname, './');
     
 // command-line options
 var yargs = require('yargs')
@@ -57,7 +60,7 @@ if (config['swift-3-api']) {
 
 // parse each source file, building up a parsed data object
 var parsedData = sources.reduce(function(previous, current) {
-    var data = fs.readFileSync(current, 'utf8');
+    var data = fs.readFileSync(appRoot + current, 'utf8');
     return parser.parse(data, previous);
 }, null);
 
