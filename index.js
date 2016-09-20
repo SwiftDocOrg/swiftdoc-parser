@@ -54,7 +54,7 @@ if (sources.length == 0) {
 }
 
 // toggle Swift 3 API parsing
-if (config['swift-3-api']) {
+if (config['swift-api'] == '3.0') {
     parser.useSwift3APIs();
 }
 
