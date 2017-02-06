@@ -1,0 +1,9 @@
+{
+    "output-dir": "output-dir/v3.1",
+    "url-prefix": "/v3.1/",
+    "swift-api": "3.1",
+    "source-files": [
+        "data/stdlib/swiftlang-802.0.27.2.txt",
+        "data/addenda/3.0/foundation.txt"
+    ]
+}

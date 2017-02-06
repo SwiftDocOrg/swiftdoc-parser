@@ -1,0 +1,9 @@
+{
+    "output-dir": "output-dir/nightly",
+    "url-prefix": "/nightly/",
+    "swift-api": "3.0",
+    "source-files": [
+        "data/stdlib/swift-master-1466a5e.txt",
+        "data/addenda/3.0/foundation.txt"
+    ]
+}

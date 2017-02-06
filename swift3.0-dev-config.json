@@ -1,9 +1,0 @@
-{
-    "output-dir": "output-dir/v3.0-dev",
-    "url-prefix": "/v3.0-dev/",
-    "swift-api": "3.0",
-    "source-files": [
-        "data/stdlib/swiftlang-00000000.txt",
-        "data/addenda/3.0/foundation.txt"
-    ]
-}
