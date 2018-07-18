@@ -1,0 +1,27 @@
+precedencegroup AdditionPrecedence {
+    associativity: left
+    higherThan: RangeFormationPrecedence
+}
+
+infix operator + : AdditionPrecedence
+infix operator - : AdditionPrecedence
+
+protocol FixedWidthInteger {
+    static func + (lhs: Int, rhs: Int) -> Int
+    
+    var bitWidth: Int { get }
+}
+
+struct Int : FixedWidthInteger {
+    static func + (lhs: Int, rhs: Int) -> Int
+    static func - (lhs: Int, rhs: Int) -> Int
+    
+    init()
+    init(bitPattern: UInt)
+    init(_ value: Int8)
+}
+
+public typealias UnsafeBufferPointerIterator<T> = UnsafeBufferPointer<T>.Iterator
+
+public struct UnsafeMutableBufferPointer<Element> {
+}
