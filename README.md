@@ -1,6 +1,9 @@
-# swiftdoc-parser   
+# swiftdoc-parser
 
-*Header parsing and HTML generating utilities for SwiftDoc.org*
+> This project is no longer maintained. 
+> We're now using [swift-doc](https://github.com/SwiftDocOrg/swift-doc) to generate the SwiftDoc.org website.
+
+---
 
 ## Installation
 
